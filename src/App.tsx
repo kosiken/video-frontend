@@ -1,21 +1,19 @@
 import React from "react";
-import logo from "./logo.svg";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Button, Card, Container, Grid, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import create from "./assets/create.png";
-import share from "./assets/share.png";
-import upload from "./assets/upload.png";
-import earn from "./assets/earn.png";
+import ChevronRight from "@mui/icons-material/ChevronRight";
 
 import Centered from "./components/Centered";
 import Spacer from "./components/Spacer";
+import VideoGrid from "./components/VideoGrid";
 
 type IntroCard = {
   image: string;
   header: string;
   description: string;
 };
+
 
 let theme = createTheme({
   palette: {
@@ -31,27 +29,27 @@ let theme = createTheme({
 function App() {
   const IntroCards: IntroCard[] = [
     {
-      image: create,
+      image: "/images/create.png",
       header: "Create Magic",
       description:
         "Create wonderful and amazing videos that you want to show to the world",
     },
 
     {
-      image: upload,
+      image: "/images/upload.png",
       header: "Upload to Ereder",
       description:
         "Showcase the world from your perspective by uploading your videos to Ereder",
     },
 
     {
-      image: share,
+      image: "/images/share.png",
       header: "Sharing is Caring",
       description:
         "You can share your Ereder videos with your close friends, paying viewers or the world",
     },
     {
-      image: earn,
+      image: "/images/earn.png",
       header: "Earn Money",
       description: "Ereder is like OnlyFans but without the 18+ content",
     },
@@ -59,17 +57,18 @@ function App() {
 
   const [numberOfUsers, setNumOfUsers] = React.useState(1000);
   let idRef = React.useRef<any>();
-  // React.useEffect(() => {
-  //   idRef.current = setInterval(() => {
-  //       setNumOfUsers(numberOfUsers + 1);
-  //   }, 300)
-  //   return () => {
-  //    clearInterval(idRef.current)
-  //   }
-  // });
+  React.useEffect(() => {
+    idRef.current = setInterval(() => {
+        setNumOfUsers(numberOfUsers + 1);
+    }, 500)
+    return () => {
+     clearInterval(idRef.current)
+    }
+  });
   return (
-    <div className="App">
+    <main className="App">
       <ThemeProvider theme={theme}>
+        <Box>
         <Box
           sx={{
             backgroundColor: "primary.main",
@@ -125,6 +124,7 @@ function App() {
           {IntroCards.map((card, n) => (
             <Grid sx={{ padding: "10px" }} md={3} sm={6} key={"card" + n}>
               <Card
+              elevation={0}
                 sx={{
                   borderRadius: 4,
                   minHeight: { md: 300, sm: 250 },
@@ -150,8 +150,12 @@ function App() {
           ))}
         </Grid>
 
-        <Spacer space={100} />
-
+        <Spacer space={30} />
+        <Box sx={{
+          backgroundColor: "#b9b9dd",
+         
+          padding: "2em 0"
+        }}>
         <Container>
           <Grid container>
             <Grid item md={6} sm={12} sx={{ padding: "0 20px" }}>
@@ -162,7 +166,7 @@ function App() {
               </Typography>
 
               <Typography variant="h4">Kenechukwu Rhema </Typography>
-              <Typography color="gray" fontStyle="italic"> 
+              <Typography  color="white" fontStyle="italic"> 
                 Lead Creative Director at KRC Entertainent 
               </Typography>
             </Grid>
@@ -172,20 +176,37 @@ function App() {
               </Typography>
 
               <Typography variant="h4">Christopher Okeke </Typography>
-              <Typography color="gray" fontStyle="italic"> 
+              <Typography color="white" fontStyle="italic"> 
                CEO, Akaokeke Investment Fund, Africa
               </Typography>
             </Grid>
           </Grid>
-
+          </Container>
+          </Box>
           <Spacer space={100} />
+          <Container>
+            <Box display="flex" alignItems="center" >
+          <Typography variant="h3" sx={{flex: 1}} id="explore">
+            Explore
+            </Typography>
+            <Button  endIcon={<ChevronRight/>} href="/explore">View More</Button>
+            </Box>
+            <Spacer space={10} />
+            <VideoGrid videoPlaceholderCount={8} />
+      
 
-          <Typography variant="h3" id="explore">
-            Explore{" "}
-          </Typography>
+
+         
         </Container>
+        <Spacer space={100} />
+
+        <footer>
+          <Typography align="center">&copy; KRC media 2021 </Typography>
+        </footer>
+        </Box>
+        
       </ThemeProvider>
-    </div>
+    </main>
   );
 }
 
