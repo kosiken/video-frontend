@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/Signup";
 import Dashboard from "./pages/authenticated/Dashboard";
 import View from "./pages/authenticated/View";
+import Profile from "./pages/authenticated/Profile";
 
  
 
@@ -45,6 +46,9 @@ function App() {
             </Route>
             <Route exact path="/dashboard" >
               <Dashboard />
+            </Route>
+            <Route exact path="/profile" >
+              <Profile />
             </Route>
             <Route exact path="/watch/:id" >
               <View />

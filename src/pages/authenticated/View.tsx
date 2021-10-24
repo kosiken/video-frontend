@@ -29,6 +29,9 @@ const View = () => {
               distinctio ut blanditiis magni voluptates numquam cumque. Dolor
               itaque cupiditate repellendus a.
             </Typography>
+            <Typography variant="caption">
+             5 hours ago
+            </Typography>
           </Box>
         </Grid>
       </Grid>

@@ -15,6 +15,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AddIcon from "@mui/icons-material/Add";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Tooltip from "@mui/material/Tooltip";
+import { Link } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -97,7 +98,10 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <Link style={{ textDecoration: "none", color: "inherit" }} to="/profile">
+        {" "}
+        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      </Link>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
@@ -119,15 +123,9 @@ export default function Header() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-            <MenuItem>
-        <IconButton
-          size="large"
-       
-          color="inherit"
-        >
-  
-            <AddIcon />
-      
+      <MenuItem>
+        <IconButton size="large" color="inherit">
+          <AddIcon />
         </IconButton>
         <p>Add Video</p>
       </MenuItem>

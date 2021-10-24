@@ -6,6 +6,7 @@ export const DefaultUser: User  = {
     email: "allisonkosy@gmail.com",
     birthdate: new Date(1998, 11, 22),
     username: "kosiken",
-    country: "Nigeria"
+    country: "Nigeria",
+    profilePic: "/images/me.jpeg"
 
 }
