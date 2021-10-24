@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { styled, alpha } from '@mui/material/styles';
+import { useState } from "react";
+ 
 import Centered from "../components/Centered";
 import Spacer from "../components/Spacer";
 import {
@@ -14,7 +14,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import InputBase from '@mui/material/InputBase';
+
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -46,16 +46,6 @@ const Countries: CountryItem[] = [
 ]
 
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  display: 'inline-block',
-  '& .MuiInputBase-input': {
-    
-    transition: theme.transitions.create('width'),  display: 'inline-block',width:'33%'
-    
-  
-  },
-}));
 const schema = yup
   .object({
     email: yup.string().email().required(),
@@ -72,6 +62,7 @@ const SignUp = () => {
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     setCountry(event.target.value);
+    console.log(dob)
   };
 
   const {
@@ -167,7 +158,6 @@ const SignUp = () => {
          }
 
          onChange={(e) => {
-           var date = e.target.value.split('-').reverse().map(v => parseInt(v));
            setDob(new Date(e.target.value))
          }}
                   

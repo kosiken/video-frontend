@@ -1,6 +1,5 @@
-import React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import Layout from "./components/Layout";
 import Explore from "./pages/Explore";
@@ -8,12 +7,10 @@ import { Provider } from "react-redux";
 import store from './store';
 import Login from "./pages/Login";
 import SignUp from "./pages/Signup";
+import Dashboard from "./pages/authenticated/Dashboard";
+import View from "./pages/authenticated/View";
 
-type IntroCard = {
-  image: string;
-  header: string;
-  description: string;
-};
+ 
 
 let theme = createTheme({
   palette: {
@@ -27,6 +24,7 @@ let theme = createTheme({
 });
 
 function App() {
+  console.log(theme)
   return (
     <main className="App">
       <Provider store={store}>
@@ -44,6 +42,12 @@ function App() {
             </Route>
             <Route exact path="/signup" >
               <SignUp />
+            </Route>
+            <Route exact path="/dashboard" >
+              <Dashboard />
+            </Route>
+            <Route exact path="/watch/:id" >
+              <View />
             </Route>
           </Layout>
         </ThemeProvider>

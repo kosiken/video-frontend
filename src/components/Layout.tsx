@@ -21,10 +21,10 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
 
 
   const user = useSelector((state: AppState) => state.auth.user);
-    const getHeader = () => location.pathname == "/login" ? <div/> : user === undefined ? <ButtonAppBar/> : <Header/>;
+    const getHeader = () => location.pathname === "/login" ? <div/> : user === undefined ? <ButtonAppBar/> : <Header/>;
 
-    if(user && location.pathname === "/login") {
-        return <Redirect to="/" />
+    if(user && (location.pathname === "/login" || location.pathname === "/" || location.pathname === "/signup")) {
+        return <Redirect to="/dashboard" />
     }
     return (
         <div className="layout">

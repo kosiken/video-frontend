@@ -1,5 +1,5 @@
 import React from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 import { Button, Card, Container, Grid, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import ChevronRight from "@mui/icons-material/ChevronRight";

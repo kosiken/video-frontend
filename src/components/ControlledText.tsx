@@ -1,16 +1,7 @@
 import { TypographyTypeMap } from '@mui/material/Typography';
 import Typography   from '@mui/material/Typography';
 import React from 'react';
-import { OverridableStringUnion } from '@mui/types';
-
-type ControlledTextProps<
-D extends React.ElementType = TypographyTypeMap['defaultComponent'],
-P = {  length?: number;
-    text: string;
-    color?: string;
-    component?: string; }
-> = TypographyTypeMap<P, D>;
-
+ 
 const ControlledText: React.FC<TypographyTypeMap<{  length?: number;
     text: string;
     color?: string;

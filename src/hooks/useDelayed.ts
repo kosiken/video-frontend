@@ -10,7 +10,7 @@ function useDelayed<T>(initialValue: T, finalValue: T, delay: number): T {
     
         // setUpdating(true);
         // console.log("ran")
-        if(timeout.current != 0) { clearTimeout(timeout.current)}
+        if(timeout.current !== 0) { clearTimeout(timeout.current)}
     
         timeout.current = window.setTimeout(() => {
           setDelayedValue(finalValue);
