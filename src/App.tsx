@@ -4,6 +4,10 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import Layout from "./components/Layout";
 import Explore from "./pages/Explore";
+import { Provider } from "react-redux";
+import store from './store';
+import Login from "./pages/Login";
+import SignUp from "./pages/Signup";
 
 type IntroCard = {
   image: string;
@@ -25,6 +29,7 @@ let theme = createTheme({
 function App() {
   return (
     <main className="App">
+      <Provider store={store}>
       <Router>
         <ThemeProvider theme={theme}>
           <Layout>
@@ -34,9 +39,16 @@ function App() {
             <Route exact path="/explore" >
               <Explore />
             </Route>
+            <Route exact path="/login" >
+              <Login />
+            </Route>
+            <Route exact path="/signup" >
+              <SignUp />
+            </Route>
           </Layout>
         </ThemeProvider>
       </Router>
+      </Provider>
     </main>
   );
 }

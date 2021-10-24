@@ -73,6 +73,7 @@ function LandingPage() {
           sx={{
             backgroundColor: "primary.main",
             marginBottom: "1em",
+            paddingTop: "1em"
           }}
         >
           <Box

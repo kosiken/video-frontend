@@ -1,17 +1,31 @@
 import { Typography } from '@mui/material'
 import React from 'react'
-import User from '../models/User'
 import ButtonAppBar from './ButtonAppBar'
 import Header from './Header'
-
+import { useSelector } from 'react-redux'
+import { AppState } from '../store'
+import {
+ 
+  Redirect,
+  useLocation
+} from "react-router-dom";
 
 type LayoutProps = {
     children: any;
-    user?: User;
+  
     showHeader?: boolean
 }
-const Layout: React.FC<LayoutProps> = ({children,user}) => {
-    const getHeader = () => user === undefined ? <ButtonAppBar/> : <Header/>;
+const Layout: React.FC<LayoutProps> = ({children}) => {
+  let location = useLocation();
+
+
+
+  const user = useSelector((state: AppState) => state.auth.user);
+    const getHeader = () => location.pathname == "/login" ? <div/> : user === undefined ? <ButtonAppBar/> : <Header/>;
+
+    if(user && location.pathname === "/login") {
+        return <Redirect to="/" />
+    }
     return (
         <div className="layout">
           {getHeader()}
