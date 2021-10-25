@@ -7,6 +7,7 @@ export const DefaultUser: User  = {
     birthdate: new Date(1998, 11, 22),
     username: "kosiken",
     country: "Nigeria",
-    profilePic: "/images/me.jpeg"
+    profilePic: "/images/me.jpeg",
+    isCreator: false
 
 }

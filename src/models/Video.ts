@@ -1,10 +1,20 @@
-interface VideoAnalytics {
+import User, { Channel } from "./User";
+
+export interface VideoAnalytics {
     likes: number;
     comments: number;
 }
 
+
+export interface Like {
+    user_id: number;
+    user?: User;
+    video: Video;
+}
+
+
 export default interface Video {
-    creator: string;
+    channel: Channel;
     thumbnail: string;
     title: string;
     description: string;
@@ -12,5 +22,6 @@ export default interface Video {
     video_type: 'public' | 'restricted';
     duration: number;
     analytics: VideoAnalytics;
+
 }
 
