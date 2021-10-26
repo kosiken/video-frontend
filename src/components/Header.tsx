@@ -10,12 +10,17 @@ import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import SettingsIcon from "@mui/icons-material/Settings";
+import Switch from '@mui/material/Switch';
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AddIcon from "@mui/icons-material/Add";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Tooltip from "@mui/material/Tooltip";
+import Avatar from "@mui/material/Avatar";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { AppState } from "../store";
+import AppLink from "./AppLink";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -58,10 +63,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Header() {
+  const user = useSelector((state: AppState) => state.auth.user);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [dark, setDark] = React.useState(false);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+  const [settingsAnchorEl, setSettingsAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
+  const isSettingsMenuOpen = Boolean(settingsAnchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event: any) => {
@@ -75,13 +83,48 @@ export default function Header() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    handleSettingsMenuClose()
+  };
+
+  const handleSettingsMenuClose = () => {
+    setSettingsAnchorEl(null);
+   
   };
 
   const handleMobileMenuOpen = (event: any) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-
+  const handleSettingsMenuOpen = (event: any) => {
+    setSettingsAnchorEl(event.currentTarget);
+  };
   const menuId = "primary-search-account-menu";
+  const menuId2 = "settings-menu";
+  const settingsMenu = (
+    <Menu
+      anchorEl={settingsAnchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={menuId2}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isSettingsMenuOpen}
+      onClose={handleSettingsMenuClose}
+    >
+ 
+        <MenuItem onClick={()=> {
+          setDark(!dark);
+        //  handleSettingsMenuClose();
+        }}>
+        <Switch checked={dark} size="small" /> <span> Dark Mode </span>
+        </MenuItem>
+      
+    </Menu>
+  );
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -98,11 +141,22 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <Link style={{ textDecoration: "none", color: "inherit" }} to="/profile">
-        {" "}
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <Link
+        style={{ textDecoration: "none", color: "inherit" }}
+        to="/main/my-dashboard"
+      >
+        <MenuItem onClick={handleMenuClose}>My Dashboard</MenuItem>
       </Link>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      {user?.isCreator && (
+        <Link
+          style={{ textDecoration: "none", color: "inherit" }}
+          to="/creator/dashboard"
+        >
+          <MenuItem onClick={handleMenuClose}>Creator Dashboard</MenuItem>
+        </Link>
+      )}
+
+      <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
     </Menu>
   );
 
@@ -123,12 +177,17 @@ export default function Header() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" color="inherit">
-          <AddIcon />
-        </IconButton>
-        <p>Add Video</p>
-      </MenuItem>
+      <AppLink
+        to={user?.isCreator ? "/creator/add-video" : "/main/become-creator"}
+        doNotUseButton
+      >
+        <MenuItem onClick={handleMenuClose}>
+          <IconButton size="large" color="inherit">
+            <AddIcon />
+          </IconButton>
+          <p>Add Video</p>
+        </MenuItem>
+      </AppLink>
       <MenuItem>
         <IconButton
           size="large"
@@ -149,9 +208,21 @@ export default function Header() {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+          <Avatar
+            sx={{ width: 24, height: 24 }}
+            alt={user?.fullName}
+            src={user?.profilePic}
+          />
         </IconButton>
         <p>Profile</p>
+      </MenuItem>
+
+      <MenuItem onClick={handleSettingsMenuOpen}>
+        <IconButton size="large" edge="end" color="inherit">
+          <SettingsIcon />
+          
+        </IconButton>
+        <p>Settings</p>
       </MenuItem>
     </Menu>
   );
@@ -160,14 +231,16 @@ export default function Header() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar color="default" elevation={0} position="fixed" style={{ top: 0 }}>
         <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            Ereder
-          </Typography>
+          <AppLink to="/main" doNotUseButton>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: "none", sm: "block" } }}
+            >
+              Ereder
+            </Typography>
+          </AppLink>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -179,11 +252,19 @@ export default function Header() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Tooltip title="Add a video">
-              <IconButton size="large" edge="end" color="inherit">
-                <AddIcon />
-              </IconButton>
-            </Tooltip>
+            <AppLink
+              to={
+                user?.isCreator ? "/creator/add-video" : "/main/become-creator"
+              }
+              doNotUseButton
+            >
+              <Tooltip title="Add a video">
+                <IconButton size="large" edge="end" color="inherit">
+                  <AddIcon />
+                </IconButton>
+              </Tooltip>
+            </AppLink>
+
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
@@ -203,8 +284,17 @@ export default function Header() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
+              <Avatar
+                sx={{ width: 30, height: 30 }}
+                alt={user?.fullName}
+                src={user?.profilePic}
+              />
             </IconButton>
+            <Tooltip title="Settings">
+              <IconButton onClick={handleSettingsMenuOpen} size="large" edge="end" color="inherit">
+                <SettingsIcon />
+              </IconButton>
+            </Tooltip>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -222,6 +312,7 @@ export default function Header() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {settingsMenu}
     </Box>
   );
 }

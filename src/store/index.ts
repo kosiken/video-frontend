@@ -1,16 +1,18 @@
-import { configureStore } from "@reduxjs/toolkit";
+import {  configureStore } from "@reduxjs/toolkit";
 import { logger } from "./middleware";
 
-import { authReducer, AuthState } from "./reducers";
+import { AuthAction, authReducer, AuthState, SettingsAction, settingsReducer, SettingsState } from "./reducers";
 
 
 export interface AppState {
     auth: AuthState;
+    settings: SettingsState
     
 }
 
-export default configureStore({
+export default configureStore<AppState, AuthAction & SettingsAction>({
     reducer: {
-        auth: authReducer
+        auth: authReducer,
+        settings: settingsReducer
     }, middleware: [logger]
 })

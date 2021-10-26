@@ -13,22 +13,25 @@ interface AppLinkProps  {
   replace?: boolean | undefined;
   innerRef?: React.Ref<HTMLAnchorElement> | undefined;
   style?: React.CSSProperties;
+  doNotUseButton?: boolean;
 };
 
 const AppLink: React.FC<AppLinkProps> = ({
   to,
   children,
   sx,
-  style, 
+  style,
+  doNotUseButton = true, 
   ...props
 }) => {
   const applyStyles = Object.assign(
     { textDecoration: "none", color: "inherit" },
     style
   );
+
   return (
     <Link to={to} style={applyStyles} {...props}>
-      <Button sx={sx}>{children}</Button>
+     {doNotUseButton ? children :  <Button sx={sx}>{children}</Button>}
     </Link>
   );
 };

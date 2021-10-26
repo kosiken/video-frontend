@@ -8,6 +8,6 @@ export const DefaultUser: User  = {
     username: "kosiken",
     country: "Nigeria",
     profilePic: "/images/me.jpeg",
-    isCreator: false
+    isCreator: true
 
 }

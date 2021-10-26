@@ -12,6 +12,7 @@ import Skeleton from "@mui/material/Skeleton";
 import Grid, { GridSize } from "@mui/material/Grid";
 import useDelayed from "../hooks/useDelayed";
 import ControlledText from "./ControlledText";
+import Centered from "./Centered";
 // import Video from '../models/Video'; 
 
 type VideoGridProps = {
@@ -21,6 +22,7 @@ type VideoGridProps = {
   sm?:GridSize;
   lg?: GridSize;
   md?: GridSize;
+  prefix?: string;
 };
 
 const VideoGrid: React.FC<VideoGridProps> = ({
@@ -29,7 +31,8 @@ const VideoGrid: React.FC<VideoGridProps> = ({
   xs= 12,
   sm = 6,
   md = 4,
-  lg = 3
+  lg = 3,
+  prefix = "/open"
 }) => {
  
   // const [videos, setVideos] = useState<Video[]>([]);
@@ -43,7 +46,8 @@ const VideoGrid: React.FC<VideoGridProps> = ({
           {items.map((item, index) => {
             return (
               <Grid key={"video" + index} item lg={lg} md={md} sm={sm} xs={xs} style={{minWidth: '260px'}}>
-                <Card sx={{ maxWidth: 345, m: 2 }}>
+              <Centered>
+              <Card sx={{ maxWidth: 345, m: 2, minHeight: 302 }}>
                   <CardHeader
                     avatar={
                       <a
@@ -68,14 +72,15 @@ const VideoGrid: React.FC<VideoGridProps> = ({
                   />
                   <a
                     style={{ textDecoration: "none" }}
-                    href="/watch/intresting-channel-78767367376"
+                    href={`${prefix}/watch/intresting-channel-78767367376`}
                   >
                     <CardMedia
                       component="img"
                       height="140"
                       image="/images/hq720.webp"
                       alt="Nicola Sturgeon on a TED talk stage"
-                      sx={{ fontSize: "12px" }}
+                      sx={{ fontSize: "12px" , minHeight: 150,}}
+
                     />
                   </a>
 
@@ -92,6 +97,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
                     />
                   </CardContent>
                 </Card>
+              </Centered>
               </Grid>
             );
           })}

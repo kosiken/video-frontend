@@ -1,8 +1,8 @@
-import  Typography  from '@mui/material/Typography'
-
+import { Typography } from '@mui/material'
 import React from 'react'
+import CreatorHeader from './CreatorHeader'
 
-import Header from './Header'
+
 
 // import {
  
@@ -12,10 +12,9 @@ import Header from './Header'
 
 type LayoutProps = {
     children: any;
-  
-    showHeader?: boolean
+ 
 }
-const Layout: React.FC<LayoutProps> = ({children}) => {
+const CreatorLayout: React.FC<LayoutProps> = ({children}) => {
   // let location = useLocation();
 
 
@@ -23,8 +22,8 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
   // const user = useSelector((state: AppState) => state.auth.user);
   
     return (
-        <div className="layout" >
-          <Header/>
+        <div className="layout">
+          <CreatorHeader />
             {children}
 
             <footer>
@@ -34,4 +33,4 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
     )
 }
 
-export default Layout
+export default CreatorLayout

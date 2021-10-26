@@ -13,16 +13,18 @@ const Dashboard = () => {
   return (
     <Box>
       <Box style={{maxHeight: 'calc(100vh )', overflow: 'hidden', marginTop: '64px'}} sx={{ position: "relative", display: { sm: "block", md: "flex" } }}>
-        <Box style={{overflowY: 'scroll'}} flex={1}>
+        <Box style={{overflowY: 'scroll', height: '100vh'}} flex={1}>
+          
           <Container>
-            <VideoGrid videoPlaceholderCount={24} />
+
+            <VideoGrid videoPlaceholderCount={24}   prefix="/main" />
           </Container>
         </Box>
 
         <Box
           sx={{
             display: { md: "block", sm: "none" },
-            width: { md: "350px", sm: "90vw" },
+            width: { md: "250px", sm: "90vw" },
             
           }}
           style={{padding: '1em 0 0'}}

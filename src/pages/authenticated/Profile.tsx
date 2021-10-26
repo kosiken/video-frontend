@@ -135,7 +135,7 @@ const TabOne: React.FC<{ user?: User }> = ({ user }) => {
 
   return (
     <Container maxWidth="md">
-      <Typography sx={{ mt: 2, mb: 2 }} fontWeight="bold">
+      <Typography sx={{ mt: 2, mb: 2 , color: 'text.primary'}}  fontWeight="bold">
         Profile Picture
       </Typography>
       <Box sx={{ mt: 2 }}>
@@ -157,7 +157,7 @@ const TabOne: React.FC<{ user?: User }> = ({ user }) => {
         <Spacer space={20} />
         <Divider variant="middle" /> <Spacer space={20} />
         <form style={{ maxWidth: "500px" }}>
-          <Typography sx={{ mt: 2, mb: 2 }} fontWeight="bold">
+          <Typography sx={{ mt: 2, mb: 2 , color: 'text.primary'}} fontWeight="bold">
             Contact Details
           </Typography>
           <FormControl fullWidth>
@@ -290,7 +290,7 @@ const TabTwo: React.FC<KosyTabProps> =  ({showing}) => {
             <AppLink
               to={"#/channel/" + index}
              
-              style={{ display: "block", marginBottom: 10, flex: 1 }}
+              style={{  marginBottom: 10, flex: 1,  display: "flex", }}
               sx={{
                 textTransform: "none",
                 display: "flex",
@@ -301,7 +301,7 @@ const TabTwo: React.FC<KosyTabProps> =  ({showing}) => {
             >
               <Avatar alt={creator.name} src={creator.logo} />
               <Box padding="0 0 0 1em">
-                <Typography fontWeight="bold" >
+                <Typography fontWeight="bold" sx={{color: 'text.primary'}}>
                   {creator.name}
                 </Typography>
                 <Typography  component="p" variant="subtitle2" color="GrayText" align="left">
@@ -357,14 +357,14 @@ const [viewHistory, /* setViewHistory */] = useState(ViewHistoryList);
           </Link>
           </div>
           <Box flex={1} padding="1em">
-          <Typography fontWeight="bold" >
+          <Typography fontWeight="bold" sx={{color: 'text.primary'}}>
                   {video.title}
                 </Typography>
-                <Typography  fontSize={".85rem"} >
+                <Typography sx={{color: 'text.primary'}}  fontSize={".85rem"} >
                   {shortenText(video.description, 100)}
                 </Typography>
                 <AppLink to={"/channel/" + ((typeof video.channel === "number")? video.channel : video.channel.id)} sx={{mt: 1, textTransform: 'none', padding: 0}}>
-                <Typography variant="subtitle2"  >
+                <Typography sx={{color: 'text.primary'}} variant="subtitle2"  >
                   {video.channel_name}
                 </Typography>
                 </AppLink>
@@ -404,10 +404,10 @@ const TabFour: React.FC<KosyTabProps> = ({showing}) => {
             </Link>
             </div>
             <Box flex={1} padding="1em">
-            <Typography fontWeight="bold" >
+            <Typography sx={{color: 'text.primary'}} fontWeight="bold" >
                     {video.title}
                   </Typography>
-                  <Typography  fontSize={".85rem"} >
+                  <Typography sx={{color: 'text.primary'}} fontSize={".85rem"} >
                     {shortenText(video.description, 80)}
                   </Typography>
               
