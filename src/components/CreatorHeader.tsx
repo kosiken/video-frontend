@@ -1,30 +1,29 @@
 import * as React from "react";
+import { useLocation } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import SettingsIcon from '@mui/icons-material/Settings';
-import Tooltip from '@mui/material/Tooltip';
-import Switch from '@mui/material/Switch';
-import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "../store";
+import SettingsIcon from "@mui/icons-material/Settings";
+import Tooltip from "@mui/material/Tooltip";
+import Switch from "@mui/material/Switch";
+import { useDispatch  } from "react-redux";
 
+import AppLink from "./AppLink";
 
-
-
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 interface Props {
   /**
@@ -34,24 +33,31 @@ interface Props {
   window?: () => Window;
 }
 
+interface IDrawerMenuItem {
+  title: string;
+  url: string;
+  Icon: any;
+}
+
+const DrawerItems: IDrawerMenuItem[] = [
+  { title: "Dashboard", url: "/dashboard", Icon: DashboardIcon },
+  { title: "Create Video", url: "/createVideo", Icon: AddCircleIcon },
+];
 export default function CreatorHeader(props: Props) {
+  let location = useLocation();
   const dispatch = useDispatch();
-  const state = useSelector((state: AppState) => state.settings.darkMode);
-  const [dark, setDark] = React.useState(false)
+  // const state = useSelector((state: AppState) => state.settings.darkMode);
+  const [dark, setDark] = React.useState(false);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-   const [settingsAnchorEl, setSettingsAnchorEl] = React.useState(null);
-   const isSettingsMenuOpen = Boolean(settingsAnchorEl);
- 
- 
- 
+  const [settingsAnchorEl, setSettingsAnchorEl] = React.useState(null);
+  const isSettingsMenuOpen = Boolean(settingsAnchorEl);
 
   const handleSettingsMenuClose = () => {
     setSettingsAnchorEl(null);
-   
   };
- 
+
   const handleSettingsMenuOpen = (event: any) => {
     setSettingsAnchorEl(event.currentTarget);
   };
@@ -73,18 +79,17 @@ export default function CreatorHeader(props: Props) {
       open={isSettingsMenuOpen}
       onClose={handleSettingsMenuClose}
     >
- 
-        <MenuItem onClick={()=> {
-         dispatch({type: "change-theme", value: !dark})
-         setDark(!dark)
-        //  handleSettingsMenuClose();
-        }}>
+      <MenuItem
+        onClick={() => {
+          dispatch({ type: "change-theme", value: !dark });
+          setDark(!dark);
+          //  handleSettingsMenuClose();
+        }}
+      >
         <Switch checked={dark} size="small" /> <span> Dark Mode </span>
-        </MenuItem>
-      
+      </MenuItem>
     </Menu>
   );
-
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -92,21 +97,26 @@ export default function CreatorHeader(props: Props) {
 
   const drawer = (
     <div>
-      <Box padding="0 1em">
-     
-        </Box>
+      <Box padding="0 1em"></Box>
       <Divider />
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+        {DrawerItems.map((Item, index) => {
+          const to = ('/creator' + Item.url) 
+            const selected = to === location.pathname
+          return (
+            <AppLink to={to} doNotUseButton key={'ereder-drawer-item' + index}>
+          <ListItem selected={selected} button >
+            <ListItemIcon >
+              <Item.Icon/>
             </ListItemIcon>
-            <ListItemText primary={text} />
+            <ListItemText primary={Item.title} />
           </ListItem>
-        ))}
+          </AppLink>
+        )
+        }
+        )}
       </List>
-      <Divider />
+      {/* <Divider />
       <List>
         {["All mail", "Trash", "Spam"].map((text, index) => (
           <ListItem button key={text}>
@@ -115,8 +125,9 @@ export default function CreatorHeader(props: Props) {
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
-        ))}
+        ))} 
       </List>
+      */}
     </div>
   );
 
@@ -125,9 +136,11 @@ export default function CreatorHeader(props: Props) {
 
   return (
     <Box sx={{ display: "flex" }}>
- 
       <AppBar
-        color="default" elevation={0} position="fixed" style={{ top: 0 }}
+        color="default"
+        elevation={0}
+        position="fixed"
+        style={{ top: 0 }}
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
@@ -148,11 +161,15 @@ export default function CreatorHeader(props: Props) {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Tooltip title="Settings">
-                <IconButton  onClick={handleSettingsMenuOpen}  size="large" edge="end" color="inherit">
-                  <SettingsIcon />
-                </IconButton>
-              </Tooltip>
-
+            <IconButton
+              onClick={handleSettingsMenuOpen}
+              size="large"
+              edge="end"
+              color="inherit"
+            >
+              <SettingsIcon />
+            </IconButton>
+          </Tooltip>
         </Toolbar>
         {settingsMenu}
       </AppBar>
