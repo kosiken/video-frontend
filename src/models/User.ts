@@ -1,11 +1,14 @@
 
 export interface Channel {
+    id: number;
     user_id: number;
     name: string;
-    about: string;
+    about?: string;
+    short_description?: string; 
     logo: string;
-    banner: string;
-    subscriber_count: number;
+    banner?: string;
+    follower_count: number;
+   
 }
 
 export interface Subsription {

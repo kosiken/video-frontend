@@ -11,17 +11,26 @@ export interface Like {
     user?: User;
     video: Video;
 }
-
+export interface VideoPurchase {
+    user_id: number;
+    video: Video;
+    price: number;
+    
+    
+}
 
 export default interface Video {
-    channel: Channel;
+    id: number | string;
+    channel: Channel | number;
+    channel_name: string;
     thumbnail: string;
     title: string;
     description: string;
     uploaded: Date;
     video_type: 'public' | 'restricted';
     duration: number;
-    analytics: VideoAnalytics;
+    analytics?: VideoAnalytics;
+    views: number;
 
 }
 
