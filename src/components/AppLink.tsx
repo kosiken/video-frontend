@@ -21,7 +21,7 @@ const AppLink: React.FC<AppLinkProps> = ({
   children,
   sx,
   style,
-  doNotUseButton = true, 
+  doNotUseButton = false, 
   ...props
 }) => {
   const applyStyles = Object.assign(

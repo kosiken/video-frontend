@@ -20,6 +20,7 @@ import useHover from "../hooks/useHover";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import useWindowSize, { Size } from "../hooks/useWindowSize";
+import { toHHMMSS } from "../utils/functions";
 
 type VideoViewProps = {
   url: string;
@@ -123,17 +124,7 @@ const VideoView: React.FC<VideoViewProps> = ({ url }) => {
       }
     };
   }, [show]);
-  var toHHMMSS = (secs: number) => {
-    var sec_num = Math.floor(secs);
-    var hours = Math.floor(sec_num / 3600);
-    var minutes = Math.floor(sec_num / 60) % 60;
-    var seconds = sec_num % 60;
-
-    return [hours, minutes, seconds]
-      .map((v) => (v < 10 ? "0" + v : v))
-      .filter((v, i) => v !== "00" || i > 0)
-      .join(":");
-  };
+ 
   useEffect(() => {
     setDurationString(toHHMMSS(duration));
     return () => {};

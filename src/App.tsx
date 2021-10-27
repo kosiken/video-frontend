@@ -24,6 +24,7 @@ import LayoutOpen from "./components/LayoutOpen";
 import BecomeACreator from "./pages/authenticated/BecomeACreator";
 import CreatorDashboard from "./pages/authenticated/creator/CreatorDashboard";
 import CreatorLayout from "./components/CreatorLayout";
+import EditChannel from "./pages/authenticated/creator/EditChannel";
 
 let theme = createTheme({
   palette: {
@@ -56,6 +57,9 @@ function CreatorRoutes() {
       <Switch>
         <Route exact path={`${path}/dashboard`}>
           <CreatorDashboard />
+        </Route>
+        <Route exact path={`${path}/edit-channel`}>
+          <EditChannel />
         </Route>
       </Switch>
     </CreatorLayout>

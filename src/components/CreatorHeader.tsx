@@ -14,6 +14,9 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from "@mui/icons-material/Add";
+
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -41,7 +44,9 @@ interface IDrawerMenuItem {
 
 const DrawerItems: IDrawerMenuItem[] = [
   { title: "Dashboard", url: "/dashboard", Icon: DashboardIcon },
-  { title: "Create Video", url: "/createVideo", Icon: AddCircleIcon },
+  { title: "Create Video", url: "/add-video", Icon: AddCircleIcon },
+  { title: "Edit Channel", url: "/edit-channel", Icon: EditIcon },
+
 ];
 export default function CreatorHeader(props: Props) {
   let location = useLocation();
@@ -142,8 +147,8 @@ export default function CreatorHeader(props: Props) {
         position="fixed"
         style={{ top: 0 }}
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
         }}
       >
         <Toolbar>
@@ -152,7 +157,7 @@ export default function CreatorHeader(props: Props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />
           </IconButton>
@@ -160,6 +165,18 @@ export default function CreatorHeader(props: Props) {
             Ereder Creator
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
+          <AppLink to="/creator/add-video" doNotUseButton>
+          <Tooltip title="Create Video">
+            <IconButton
+             
+              size="large"
+              edge="end"
+              color="inherit"
+            >
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+          </AppLink>
           <Tooltip title="Settings">
             <IconButton
               onClick={handleSettingsMenuOpen}
@@ -188,7 +205,7 @@ export default function CreatorHeader(props: Props) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: "block", sm: "none" },
+            display: { sm: "block", md: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
@@ -200,7 +217,7 @@ export default function CreatorHeader(props: Props) {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: "none", sm: "block" },
+            display: { sm: "none", xs: "none", md: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,

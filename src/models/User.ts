@@ -8,7 +8,8 @@ export interface Channel {
     logo: string;
     banner?: string;
     follower_count: number;
-   
+   like_count?: number;
+   video_count?: number;
 }
 
 export interface Subsription {
