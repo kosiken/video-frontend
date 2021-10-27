@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Link } from "react-router-dom";
+import ApiSignleton from "../api/api";
 
 
 type CountryItem = {
@@ -48,9 +49,10 @@ const Countries: CountryItem[] = [
 
 const schema = yup
   .object({
-    email: yup.string().email().required(),
-    password: yup.string().min(5).required(),
+    emailAddress: yup.string().email().required(),
+    password: yup.string().min(4).required(),
     fullName: yup.string().min(3).required(),
+    dob: yup.string().length(10).required()
   })
   .required();
 
@@ -59,6 +61,7 @@ const SignUp = () => {
   const [errrorMessage] = useState("");
   const [country, setCountry] = useState(Countries[0].value)
   const [dob, setDob] = useState<Date>();
+  const Api = ApiSignleton()
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     setCountry(event.target.value);
@@ -74,9 +77,11 @@ const SignUp = () => {
   const onSubmit = (data: any) => {
     console.log(data)
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+
+    Api.signIn(data).then(console.log).catch((e)=> {
+      throw e;
+    })
+ 
   };
 
   return (
@@ -129,7 +134,7 @@ const SignUp = () => {
                  InputProps={{
                   type: "email",
                 }}
-                {...register("email")}
+                {...register("emailAddress")}
               />
             </FormControl>
             <Spacer space={20} />

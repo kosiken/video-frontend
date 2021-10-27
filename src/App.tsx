@@ -1,3 +1,4 @@
+import React from 'react'
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
   BrowserRouter as Router,
@@ -7,7 +8,7 @@ import {
   useLocation,
   Redirect,
 } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import { AppState } from "./store";
 import LandingPage from "./pages/LandingPage";
@@ -25,6 +26,10 @@ import BecomeACreator from "./pages/authenticated/BecomeACreator";
 import CreatorDashboard from "./pages/authenticated/creator/CreatorDashboard";
 import CreatorLayout from "./components/CreatorLayout";
 import EditChannel from "./pages/authenticated/creator/EditChannel";
+import ApiSignleton from "./api/api";
+
+import Centered from './components/Centered';
+import { CircularProgress } from '@mui/material';
 
 let theme = createTheme({
   palette: {
@@ -107,9 +112,34 @@ function DefRoutes() {
 
 function VideoApp() {
   let user = useSelector((state: AppState) => state.auth.user);
-  let darkMode =  useSelector((state: AppState) => state.settings.darkMode);
-
+  let darkMode = useSelector((state: AppState) => state.settings.darkMode);
+  const [loading, setLoading] = React.useState(true)
+  const dispatch = useDispatch()
   let location = useLocation();
+  const Api = ApiSignleton();
+
+  const getUser = async () => {
+    if (user) {
+      setLoading(false);
+      return;
+    }
+    try {
+      let u = await Api.me();
+     if(u && u.email)dispatch({ type: "login", user: u });
+      setLoading(false)
+    }
+    catch (err) {
+      setLoading(false);
+    }
+  }
+
+  React.useEffect(() => {
+
+
+    getUser();
+
+
+  })
 
   console.log('darkMode')
   if (
@@ -121,6 +151,45 @@ function VideoApp() {
   ) {
     return <Redirect to="/main" />;
   }
+
+const loadingBody = (
+  <Centered sx={{height: '100vh'}}>
+    <Box> <CircularProgress />
+    <p>Loading</p></Box>
+   
+  </Centered>
+)
+  const mainBody = (   <Switch>
+    <Route exact path="/">
+      <LayoutOpen>
+        <LandingPage />
+      </LayoutOpen>
+    </Route>
+    <Route exact path={`/login`}>
+      <Login />
+    </Route>
+    <Route exact path={`/signup`}>
+      <SignUp />
+    </Route>
+    <Route exact path={`/explore`}>
+      <LayoutOpen>
+        <Explore />
+      </LayoutOpen>
+    </Route>
+    <Route path="/main">
+      <UserRoutes />
+    </Route>
+    <Route path="/creator">
+      <CreatorRoutes />
+    </Route>
+    <Route path="/open">
+      <DefRoutes />
+    </Route>
+    <Route path="/creator">
+      <p>lol</p>
+    </Route>
+  </Switch>)
+  
   return (
     <ThemeProvider theme={darkMode ? theme2 : theme}>
       <Box
@@ -130,32 +199,7 @@ function VideoApp() {
           color: "text.primary",
         }}
       >
-        <Switch>
-          <Route exact path="/">
-            <LandingPage />
-          </Route>
-          <Route exact path={`/login`}>
-            <Login />
-          </Route>
-          <Route exact path={`/signup`}>
-            <SignUp />
-          </Route>
-          <Route exact path={`/explore`}>
-            <Explore />
-          </Route>
-          <Route path="/main">
-            <UserRoutes />
-          </Route>
-          <Route path="/creator">
-            <CreatorRoutes />
-          </Route>
-          <Route path="/open">
-            <DefRoutes />
-          </Route>
-          <Route path="/creator">
-            <p>lol</p>
-          </Route>
-        </Switch>
+     {loading ? loadingBody : mainBody}
       </Box>
     </ThemeProvider>
   );

@@ -8,6 +8,7 @@ import Centered from "../components/Centered";
 import Spacer from "../components/Spacer";
 import VideoGrid from "../components/VideoGrid";
 import { Link } from "react-router-dom";
+import ApiSignleton from "../api/api";
 
 type IntroCard = {
   image: string;
@@ -15,7 +16,33 @@ type IntroCard = {
   description: string;
 };
 
+const IntroCards: IntroCard[] = [
+  {
+    image: "/images/create.png",
+    header: "Create Magic",
+    description:
+      "Create wonderful and amazing videos that you want to show to the world",
+  },
 
+  {
+    image: "/images/upload.png",
+    header: "Upload to Ereder",
+    description:
+      "Showcase the world from your perspective by uploading your videos to Ereder",
+  },
+
+  {
+    image: "/images/share.png",
+    header: "Sharing is Caring",
+    description:
+      "You can share your Ereder videos with your close friends, paying viewers or the world",
+  },
+  {
+    image: "/images/earn.png",
+    header: "Earn Money",
+    description: "Ereder is like OnlyFans but without the 18+ content",
+  },
+];
 let theme = createTheme({
   palette: {
     primary: {
@@ -28,34 +55,8 @@ let theme = createTheme({
 });
 
 function LandingPage() {
-  const IntroCards: IntroCard[] = [
-    {
-      image: "/images/create.png",
-      header: "Create Magic",
-      description:
-        "Create wonderful and amazing videos that you want to show to the world",
-    },
 
-    {
-      image: "/images/upload.png",
-      header: "Upload to Ereder",
-      description:
-        "Showcase the world from your perspective by uploading your videos to Ereder",
-    },
-
-    {
-      image: "/images/share.png",
-      header: "Sharing is Caring",
-      description:
-        "You can share your Ereder videos with your close friends, paying viewers or the world",
-    },
-    {
-      image: "/images/earn.png",
-      header: "Earn Money",
-      description: "Ereder is like OnlyFans but without the 18+ content",
-    },
-  ];
-
+  const Api = ApiSignleton()
   const [numberOfUsers, setNumOfUsers] = React.useState(1000);
   let idRef = React.useRef<any>();
   React.useEffect(() => {
@@ -109,6 +110,10 @@ function LandingPage() {
                   ":hover": {
                     backgroundColor: "secondary.main",
                   },
+                }}
+
+                onClick={() => {
+                  Api.me().then(console.log).catch(console.log)
                 }}
               >
                 Get Started

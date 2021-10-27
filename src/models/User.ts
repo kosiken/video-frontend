@@ -22,7 +22,7 @@ export default interface User {
     id: number;
     email: string;
     username: string;
-    birthdate: Date;
+    birthdate: Date | string;
     country: string;
     profilePic: string;
     fullName: string;

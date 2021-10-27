@@ -1,4 +1,5 @@
 import { Action } from "@reduxjs/toolkit";
+// eslint-disable-next-line
 import { DefaultUser } from "../constants";
 import User from "../models/User";
 export interface AuthState  {
@@ -22,7 +23,7 @@ export interface SettingsAction extends Action<settingsActions> {
 };
 
 let initalAuthState: AuthState = {
-  user: DefaultUser,
+  // user: DefaultUser,
 };
 
 let initialSettingsState: SettingsState = {
