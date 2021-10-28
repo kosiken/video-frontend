@@ -128,7 +128,7 @@ function LandingPage() {
 
         <Grid container sx={{ width: "100vw" }}>
           {IntroCards.map((card, n) => (
-            <Grid sx={{ padding: "10px" }} md={3} sm={6} key={"card" + n}>
+            <Grid item sx={{ padding: "10px" }} md={3} sm={6} key={"card" + n}>
               <Card
               elevation={0}
                 sx={{

@@ -19,6 +19,8 @@ export interface Subsription {
 
 
 export default interface User {
+
+    
     id: number;
     email: string;
     username: string;
@@ -29,5 +31,6 @@ export default interface User {
     password?: string;
     isCreator: boolean;
     channel?: Channel;
+    token?: string;
 
 }

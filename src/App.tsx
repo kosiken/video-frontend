@@ -149,7 +149,13 @@ function VideoApp() {
       location.pathname === "/signup" ||
       location.pathname === "/explore")
   ) {
+    console.log(location.pathname)
     return <Redirect to="/main" />;
+  }
+  else if(!user && !loading) {
+    if(location.pathname.startsWith('/main') || location.pathname.startsWith('/creator')) {
+      return <Redirect to={`/login`} />;
+    }
   }
 
 const loadingBody = (

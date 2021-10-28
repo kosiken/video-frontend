@@ -1,15 +1,18 @@
-import { useState } from "react";
- 
+import  React, { useState } from "react";
+import querystring from 'querystring'
+
 import Centered from "../components/Centered";
 import Spacer from "../components/Spacer";
-import {
-  Button,
-  Card,
-  CardContent,
-  LinearProgress,
-  TextField,
-  Typography,
-} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Snackbar from "@mui/material/Snackbar";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import LinearProgress from "@mui/material/LinearProgress";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -18,7 +21,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ApiSignleton from "../api/api";
 
 
@@ -57,12 +60,32 @@ const schema = yup
   .required();
 
 const SignUp = () => {
+  let location = useLocation();
+
   const [loading, setLoading] = useState(false);
-  const [errrorMessage] = useState("");
+  const [errrorMessage, setErrorMessage] = useState("");
+    const [errorPresent, setErrorPresent] = useState(false);
   const [country, setCountry] = useState(Countries[0].value)
   const [dob, setDob] = useState<Date>();
   const Api = ApiSignleton()
 
+  let redirect: string;
+
+  if(!!location.search) {
+    redirect = location.search.slice(1);
+    redirect = querystring.parse(redirect).rediirectTo as string
+    console.log(redirect)
+  }
+  
+
+  const handleOpen = (message: string) => {
+    setErrorMessage(message);
+    setErrorPresent(true)
+      }
+      const handleClose = () => {
+        setErrorMessage("");
+        setErrorPresent(false);
+      }
   const handleChange = (event: SelectChangeEvent<string>) => {
     setCountry(event.target.value);
     console.log(dob)
@@ -78,11 +101,44 @@ const SignUp = () => {
     console.log(data)
     setLoading(true);
 
-    Api.signIn(data).then(console.log).catch((e)=> {
-      throw e;
+    Api.signIn(data).then(() => {
+      window.location.pathname = redirect ||  "/"
+    }).catch((e)=> {
+   if(e.response)   {
+     setLoading(false)
+     console.log(e.response);
+     switch(e.response.status) {
+       case 400: 
+          handleOpen("Email or Password Incorrect");
+          
+          break;
+      case 500:
+        handleOpen("Server Error");
+  
+        break;
+        default:
+          handleOpen("Unknown Error")
+          break;
+     }
+     return
+    
+    }
+  
+    handleOpen(e.message || "Unknown Error");
     })
- 
   };
+
+  const action = (
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={handleClose}
+    >
+
+      <CloseIcon fontSize="small" />
+  </IconButton>
+);
 
   return (
     <Centered
@@ -206,6 +262,13 @@ const SignUp = () => {
           </form>
         </CardContent>
       </Card>
+      <Snackbar
+        open={errorPresent}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={errrorMessage}
+        action={action}
+      />
     </Centered>
   );
 };

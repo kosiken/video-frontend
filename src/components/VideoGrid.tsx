@@ -45,7 +45,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
         <>
           {items.map((item, index) => {
             return (
-              <Grid key={"video" + index} item lg={lg} md={md} sm={sm} xs={xs} style={{minWidth: '260px'}}>
+              <Grid  item key={"video" + index} lg={lg} md={md} sm={sm} xs={xs} style={{minWidth: '260px'}}>
               <Centered>
               <Card sx={{ maxWidth: 345, m: 2, minHeight: 302 }}>
                   <CardHeader
@@ -108,7 +108,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
       <>
         {items.map((item, index) => {
           return (
-            <Grid key={"video" + index} item lg={3} md={4} sm={6} xs={12}>
+            <Grid item key={"video" + index} lg={3} md={4} sm={6} xs={12}>
               <Card sx={{ maxWidth: 345, m: 2 }}>
                 <CardHeader
                   avatar={
@@ -156,7 +156,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
     );
   };
 
-  return <Grid xs container>{getGrid()}</Grid>;
+  return <Grid container>{getGrid()}</Grid>;
 };
 
 export default VideoGrid;
