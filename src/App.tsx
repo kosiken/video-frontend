@@ -28,9 +28,8 @@ import CreatorLayout from "./components/CreatorLayout";
 import EditChannel from "./pages/authenticated/creator/EditChannel";
 import ApiSignleton from "./api/api";
 
-import Centered from './components/Centered';
-import { CircularProgress } from '@mui/material';
-
+import LoadingPageIndicator from './components/LoadingPageIndicator';
+ 
 let theme = createTheme({
   palette: {
     primary: {
@@ -118,28 +117,29 @@ function VideoApp() {
   let location = useLocation();
   const Api = ApiSignleton();
 
-  const getUser = async () => {
-    if (user) {
-      setLoading(false);
-      return;
-    }
-    try {
-      let u = await Api.me();
-     if(u && u.email)dispatch({ type: "login", user: u });
-      setLoading(false)
-    }
-    catch (err) {
-      setLoading(false);
-    }
-  }
+
 
   React.useEffect(() => {
 
-
+    const getUser = async () => {
+      if (user) {
+        setLoading(false);
+        return;
+      }
+      try {
+        let u = await Api.me();
+       if(u && u.email)dispatch({ type: "login", user: u });
+        setLoading(false)
+      }
+      catch (err) {
+        setLoading(false);
+      }
+    }
     getUser();
 
 
-  })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   console.log('darkMode')
   if (
@@ -158,13 +158,7 @@ function VideoApp() {
     }
   }
 
-const loadingBody = (
-  <Centered sx={{height: '100vh'}}>
-    <Box> <CircularProgress />
-    <p>Loading</p></Box>
-   
-  </Centered>
-)
+
   const mainBody = (   <Switch>
     <Route exact path="/">
       <LayoutOpen>
@@ -205,7 +199,7 @@ const loadingBody = (
           color: "text.primary",
         }}
       >
-     {loading ? loadingBody : mainBody}
+     {loading ? <LoadingPageIndicator /> : mainBody}
       </Box>
     </ThemeProvider>
   );

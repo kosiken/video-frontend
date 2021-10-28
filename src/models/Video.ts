@@ -7,9 +7,10 @@ export interface VideoAnalytics {
 
 
 export interface Like {
-    user_id: number;
+    liked_by: number;
     user?: User;
-    video: Video;
+    video_id: Video;
+    channel_id: number;
 }
 export interface VideoPurchase {
     user_id: number;
@@ -26,11 +27,12 @@ export default interface Video {
     thumbnail: string;
     title: string;
     description: string;
-    uploaded: Date;
+    uploaded: Date | number;
     video_type: 'public' | 'restricted';
     duration: number;
     analytics?: VideoAnalytics;
     views: number;
+    url: string;
 
 }
 
