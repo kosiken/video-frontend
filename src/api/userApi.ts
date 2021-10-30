@@ -35,7 +35,8 @@ class UserApi implements IUserApi {
       },
     });
     response.data.channel = sanitizedChannel(response.data.channel);
-    return response.data;
+    return response.data; // comment
+  
   }
  async  unSubscribe(channel: string): Promise<{ deleted: boolean; }> {
     let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
