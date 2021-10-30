@@ -30,6 +30,7 @@ import ApiSignleton from "./api/api";
 
 import LoadingPageIndicator from './components/LoadingPageIndicator';
 import AddCard from './pages/authenticated/AddCard';
+import BankDetails from './pages/authenticated/creator/BankDetails';
  
 let theme = createTheme({
   palette: {
@@ -65,6 +66,9 @@ function CreatorRoutes() {
         </Route>
         <Route exact path={`${path}/edit-channel`}>
           <EditChannel />
+        </Route>
+        <Route exact path={`${path}/edit-bank-account`}>
+          <BankDetails />
         </Route>
       </Switch>
     </CreatorLayout>

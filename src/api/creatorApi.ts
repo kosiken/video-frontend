@@ -1,4 +1,4 @@
-import  { Channel } from "../models/User";
+import { Channel } from "../models/User";
 import axios, { AxiosInstance } from "axios";
 
 export interface IBankAccountDetails {
@@ -12,6 +12,7 @@ interface ICreatorApi {
   getChannel(): Promise<Channel>;
   editChannel(channel: any): Promise<Channel>;
   getBankDetails(): Promise<IBankAccountDetails>;
+  updateBankDetails(data: IBankAccountDetails): Promise<IBankAccountDetails>;
 }
 
 class CreatorApi implements ICreatorApi {
@@ -22,6 +23,22 @@ class CreatorApi implements ICreatorApi {
       headers: { "Content-Type": "application/json" },
     });
   }
+  async updateBankDetails(
+    data: IBankAccountDetails
+  ): Promise<IBankAccountDetails> {
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+    const response = await this._api.post<IBankAccountDetails>(
+      `/bank-details`,
+      data,
+      {
+        headers: {
+          authorization: `Bearer ${config.token}`,
+        },
+      }
+    );
+    return response.data;
+  }
+
   async editChannel(channel: any): Promise<Channel> {
     let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
     const response = await this._api.post<Channel>(`/channel`, channel, {

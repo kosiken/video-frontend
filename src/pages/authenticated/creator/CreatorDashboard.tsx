@@ -46,6 +46,10 @@ const BankDetailsTab: React.FC<{ showing: boolean }> = ({ showing }) => {
           setLoading(false);
 
         })
+        .catch(err=> {
+          console.log(err)
+          setLoading(false)
+        })
 
       setShown(true)
     }
