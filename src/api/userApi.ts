@@ -1,8 +1,9 @@
-import User, { Channel, Subscription } from "../models/User";
+import User, { Subscription } from "../models/User";
 import axios, { AxiosInstance } from "axios";
-import Video from "../models/Video";
+// import Video from "../models/Video";
 import { sanitizedChannel } from "../utils/functions";
 import ViewHistory from "../models/ViewHistory";
+import { VideoPurchase } from "../models/Video";
 
 interface IUserApi {
   _api: AxiosInstance;
@@ -11,7 +12,8 @@ interface IUserApi {
   updateDetails(body: any): Promise<User>;
   unSubscribe(channel: string): Promise<{deleted: boolean;}>;
   subscribe(channel: string): Promise<Subscription>;
-  viewHistory(): Promise<ViewHistory>;
+  viewHistory(): Promise<ViewHistory[]>;
+  purchases(): Promise<VideoPurchase[]>;
 }
 
 class UserApi implements IUserApi {
@@ -23,8 +25,23 @@ class UserApi implements IUserApi {
       headers: { "Content-Type": "application/json" },
     });
   }
-  viewHistory(): Promise<ViewHistory> {
-    throw new Error("Method not implemented.");
+  async purchases(): Promise<VideoPurchase[]> {
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+    const response = await this._api.get<VideoPurchase[]>(`/paid-videos`,  {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+    return response.data;
+  }
+  async viewHistory(): Promise<ViewHistory[]> {
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+    const response = await this._api.get<ViewHistory[]>(`/history`,  {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+    return response.data;
   }
   async subscribe(channel: string): Promise<Subscription> {
     let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };

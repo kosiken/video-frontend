@@ -33,5 +33,9 @@ export default interface User {
     isCreator: boolean;
     channel?: Channel;
     token?: string;
+    has_billing_card: boolean;
+    billing_card_brand?: string;
+  
+    billing_card_last4?: string;
 
 }

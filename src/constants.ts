@@ -9,7 +9,7 @@ export const DefaultUser: User = {
   username: "kosiken",
   country: "Nigeria",
   profilePic: "/images/me.jpeg",
-  isCreator: true,
+  isCreator: true,has_billing_card: false
 };
 
 export const UserChannel: Channel = {

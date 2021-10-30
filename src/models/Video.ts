@@ -13,9 +13,11 @@ export interface Like {
     channel_id: number;
 }
 export interface VideoPurchase {
-    user_id: string;
-    video: Video;
-    price: number;
+    userWhoPurchased: string;
+    videoPurchased: Video;
+    amountPaid: number;
+    accessCode: string;
+    channel: Channel;
     
     
 }
@@ -29,6 +31,7 @@ export default interface Video {
     description: string;
     uploaded: Date | number;
     video_type: 'public' | 'restricted';
+    videoType: 'public' | 'restricted';
     duration: number;
     analytics?: VideoAnalytics;
     views: number;
