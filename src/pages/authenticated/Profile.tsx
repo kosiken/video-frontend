@@ -121,6 +121,7 @@ const ViewHistoryList: ViewHistory[] = [
       video_type: "public", views: 1004994, url: ''
     },
   },
+  
 ];
 
 const Purchases: VideoPurchase[] = ViewHistoryList.map(v => {
