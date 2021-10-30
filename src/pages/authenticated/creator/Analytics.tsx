@@ -145,7 +145,7 @@ const VideosTab: React.FC<KosyTabProps> = ({ showing }) => {
 
                         return <Box key={'video-' + index} sx={{ mb: 1 }} display="flex" alignItems="center">
                             <div style={{ width: "40%", maxWidth: '230px' }}>
-                                <Link to={"/main/watch/" + video.id} >
+                                <Link to={"/creator/edit-view/" + video.id} >
                                     <img style={{ display: 'block', width: '100%' }} src={video.thumbnail} alt={video.title} />
                                 </Link>
                             </div>
