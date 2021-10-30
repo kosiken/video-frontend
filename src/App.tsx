@@ -29,6 +29,7 @@ import EditChannel from "./pages/authenticated/creator/EditChannel";
 import ApiSignleton from "./api/api";
 
 import LoadingPageIndicator from './components/LoadingPageIndicator';
+import AddCard from './pages/authenticated/AddCard';
  
 let theme = createTheme({
   palette: {
@@ -87,6 +88,10 @@ function UserRoutes() {
         </Route>
         <Route exact path={`${path}/become-creator`}>
           <BecomeACreator />
+        </Route>
+
+        <Route exact path={`${path}/update-billing`}>
+          <AddCard />
         </Route>
       </Switch>
     </Layout>

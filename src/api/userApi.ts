@@ -5,6 +5,15 @@ import { sanitizedChannel } from "../utils/functions";
 import ViewHistory from "../models/ViewHistory";
 import { VideoPurchase } from "../models/Video";
 
+export interface IBillingDetails  {
+  billingCardBrand: string;
+  billingCardExpMonth: string;
+  billingCardExpYear: string;
+  billingCardLast4: string;
+  hasBillingCard: boolean;
+}
+
+
 interface IUserApi {
   _api: AxiosInstance;
 
@@ -14,6 +23,7 @@ interface IUserApi {
   subscribe(channel: string): Promise<Subscription>;
   viewHistory(): Promise<ViewHistory[]>;
   purchases(): Promise<VideoPurchase[]>;
+  addCard(data: IBillingDetails): Promise<IBillingDetails>;
 }
 
 class UserApi implements IUserApi {
@@ -24,6 +34,17 @@ class UserApi implements IUserApi {
       baseURL: "http://localhost:1337/api/user",
       headers: { "Content-Type": "application/json" },
     });
+  }
+  async addCard(data: IBillingDetails): Promise<IBillingDetails> {
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+
+    const response = await this._api.post<IBillingDetails>("/card",data, {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+
+    return response.data;
   }
   async purchases(): Promise<VideoPurchase[]> {
     let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };

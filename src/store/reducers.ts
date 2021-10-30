@@ -43,8 +43,9 @@ export function authReducer(
       returnObj.user = action.user;
       break;
     case "logout":
-        returnObj = {...state};
-      returnObj.user = undefined;
+      window.localStorage.removeItem("jwt")
+        returnObj = initalAuthState;
+     
       break;
 
     case "become_creator":

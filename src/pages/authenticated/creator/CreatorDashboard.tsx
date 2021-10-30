@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -16,14 +17,98 @@ import AppLink from "../../../components/AppLink";
 import { Channel } from "../../../models/User";
 import LoadingPageIndicator from "../../../components/LoadingPageIndicator";
 import Centered from '../../../components/Centered';
-import ApiSingleton from '../../../api/api';
+import CreatorApiSingleton, { IBankAccountDetails } from '../../../api/creatorApi';
 
 
 const ChannelInfoText = `These Details would be displayed when someone navigates to your Channel page.
 Please Note that the details here must comply with our Community Guidelines`
 
 const ChannelAnalyticsText = `Analtytics on your Channel based on user interaction. 
-You can view a full summary of analytics by going to the Analytics section in the sidebar`
+You can view a full summary of analytics by going to the Analytics section in the sidebar`;
+
+const BankInfoText = `Information that we would use to pay your withdrawal requests`;
+
+
+
+
+const BankDetailsTab: React.FC<{ showing: boolean }> = ({ showing }) => {
+  const [shown, setShown] = useState(false);
+  const [bankDetails, setBankDetails] = useState<IBankAccountDetails | undefined>();
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    if (!shown && showing) {
+      console.log('load details');
+      if (bankDetails) return;
+      const Api = CreatorApiSingleton();
+      Api.getBankDetails()
+        .then(v => {
+          setBankDetails(v);
+          setLoading(false);
+
+        })
+
+      setShown(true)
+    }
+  }, [shown, showing, bankDetails])
+
+  if(!showing) {
+    return <React.Fragment/>;
+  }
+
+
+  if (loading && !bankDetails) {
+    return (<Container maxWidth="sm" style={{ paddingTop: "2em", height: '60vh' }} >
+      <Centered sx={{ height: '100%' }}>
+        <Box>
+          <CircularProgress />
+          <Typography>Loading</Typography>
+        </Box>
+      </Centered>
+    </Container>)
+  }
+  else if (bankDetails) {
+    return (
+      <React.Fragment>
+        <Typography variant="caption" color="GrayText">
+          Bank Account Name
+        </Typography>
+        <Typography sx={{ mb: 1 }}>{bankDetails.bankAccountName}</Typography>
+
+
+
+        <Typography variant="caption" color="GrayText" >
+          Bank Account Number
+        </Typography>
+
+
+
+        <Typography fontSize={'.9em'} sx={{ mb: 1 }}>
+          {bankDetails.bankAccountNumber}
+        </Typography>
+
+        <Typography variant="caption" color="GrayText">
+          Bank Name
+        </Typography>
+        <Typography sx={{ mb: 1 }}>{bankDetails.bankName}</Typography>
+
+      </React.Fragment>
+    )
+  }
+  else
+    {
+      return (
+      <Box style={{ marginTop: "4em", position: "relative" }} sx={{ pt: 1 }}>
+        <Centered sx={{ height: "60vh" }}>
+          <Typography sx={{ mb: 1 }}>An internal error has occured</Typography>
+          <AppLink to="/" doNotUseButton>
+            Go Back
+          </AppLink>
+        </Centered>
+      </Box>
+    );
+}
+}
+
 
 
 
@@ -32,46 +117,52 @@ const CreatorDashboard = () => {
   const [channel, setChannel] = useState<Channel>();
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = React.useState(false);
+  const [showing, setShowing] = useState(false)
   const [dialogHeader, setDialogHeader] = useState("")
   const [dialogContent, setDialogContent] = useState("")
+
   const [errrorMessage, setErrorMessage] = useState("");
+  const toggleBankDetails = () => {
+    setShowing(!showing);
+  }
 
   useEffect(() => {
-    const Api = ApiSingleton();
-    if(channel){
+    const Api = CreatorApiSingleton();
+    if (channel) {
       setLoading(false)
-      return;}
-      Api.getChannel().then(ch => {
-        setChannel(ch);
-        setLoading(false);
-      }).catch((e)=> {
-        if(e.response)   {
-          setLoading(false)
-          console.log(e.response);
-          switch(e.response.status) {
-      
-       
-               case 404: 
-               setErrorMessage(e.response.data.message);
-               
-               break;
-           
-           case 500:
-             setErrorMessage("Server Error");
-       
-             break;
-             default:
-               setErrorMessage("Unknown Error")
-               break;
-          }
-          setLoading(false)
-          return
-         
-         }
-         setErrorMessage(e.message);
-         setLoading(false)
-       
-         })
+      return;
+    }
+    Api.getChannel().then(ch => {
+      setChannel(ch);
+      setLoading(false);
+    }).catch((e) => {
+      if (e.response) {
+        setLoading(false)
+        console.log(e.response);
+        switch (e.response.status) {
+
+
+          case 404:
+            setErrorMessage(e.response.data.message);
+
+            break;
+
+          case 500:
+            setErrorMessage("Server Error");
+
+            break;
+          default:
+            setErrorMessage("Unknown Error")
+            break;
+        }
+        setLoading(false)
+        return
+
+      }
+      setErrorMessage(e.message);
+      setLoading(false)
+
+    })
 
   }, [channel])
   const handleClickOpen = () => {
@@ -196,33 +287,47 @@ const CreatorDashboard = () => {
                 Total Videos
               </Typography>
 
-              <Typography paragraph fontSize={'.9em'} sx={{ mb: 1 }}>
+              <Typography paragraph sx={{ mb: 1 }}>
                 {channel.video_count || "Unavailable"}
               </Typography>
 
               <Typography variant="caption" color="GrayText" style={{ display: 'block' }} sx={{ mt: 1 }}>
-                Like Count
+                Total Views
               </Typography>
 
-              <Typography paragraph fontSize={'.9em'} sx={{ mb: 1 }}>
-                {channel.like_count || "Unavailable"}
+              <Typography paragraph sx={{ mb: 1 }}>
+                {channel.total_views || "Unavailable"}
               </Typography>
 
 
             </Box>
           </Paper>
         </Grid>
-        {/* <Grid item sm={12} md={6}>
+        <Grid item sm={12} md={6}>
 
-          <Paper sx={{minWidth: '300px'}}>
+          <Paper sx={{ minWidth: '300px' }}>
 
             <Box padding="1em">
-         
-          
+              <div style={{ display: 'flex' }}>
+                <Typography variant="h6" style={{ flex: 1 }}>Bank Information</Typography>
+                <IconButton color="info" onClick={() => {
+                  setDialogHeader("Bank Info Help")
+                  setDialogContent(BankInfoText);
+                  handleClickOpen();
+                }}>
+                  <HelpOutlineIcon />
+                </IconButton>
+              </div>
+                <BankDetailsTab showing={showing} />
+           <div style={{display: "flex", maxWidth: 300}}>
+           <Button onClick={toggleBankDetails}> {showing? 'Hide Bank Details' : 'Show Bank Details'}</Button>
+           <div style={{flexGrow: 1}} />
+           <AppLink to="/creator/edit-bank-account">Edit Details </AppLink>
+           </div>
             </Box>
 
           </Paper>
-        </Grid> */}
+        </Grid>
       </Grid>
       {dialog}
     </Container>

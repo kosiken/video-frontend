@@ -4,6 +4,7 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import Badge from "@mui/material/Badge";
@@ -17,10 +18,16 @@ import AddIcon from "@mui/icons-material/Add";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../store";
 import AppLink from "./AppLink";
+import ApiSignleton from "../api/api";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -65,12 +72,34 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Header() {
   const user = useSelector((state: AppState) => state.auth.user);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const dispatch = useDispatch()
   const [dark, setDark] = React.useState(false);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [settingsAnchorEl, setSettingsAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isSettingsMenuOpen = Boolean(settingsAnchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const logout = () => {
+    const Api = ApiSignleton();
+    Api.logout().then(() => {
+      dispatch({ type: "logout" });
+      window.location.pathname = '/login';
+    })
+
+  }
+
+
+
 
   const handleProfileMenuOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -88,7 +117,7 @@ export default function Header() {
 
   const handleSettingsMenuClose = () => {
     setSettingsAnchorEl(null);
-   
+
   };
 
   const handleMobileMenuOpen = (event: any) => {
@@ -99,6 +128,30 @@ export default function Header() {
   };
   const menuId = "primary-search-account-menu";
   const menuId2 = "settings-menu";
+
+
+  const dialog = (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+        {"Logout?"}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Are you sure you want to log out
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={logout} autoFocus>
+          Continue
+        </Button>
+      </DialogActions>
+    </Dialog>);
   const settingsMenu = (
     <Menu
       anchorEl={settingsAnchorEl}
@@ -115,14 +168,14 @@ export default function Header() {
       open={isSettingsMenuOpen}
       onClose={handleSettingsMenuClose}
     >
- 
-        <MenuItem onClick={()=> {
-          setDark(!dark);
+
+      <MenuItem onClick={() => {
+        setDark(!dark);
         //  handleSettingsMenuClose();
-        }}>
+      }}>
         <Switch checked={dark} size="small" /> <span> Dark Mode </span>
-        </MenuItem>
-      
+      </MenuItem>
+
     </Menu>
   );
   const renderMenu = (
@@ -157,8 +210,8 @@ export default function Header() {
       )}
 
       <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-{/* TODO  handle logout */}
-      <MenuItem>Logout</MenuItem>
+      {/* TODO  handle logout */}
+      <MenuItem onClick={handleClickOpen}>Logout</MenuItem>
     </Menu>
   );
 
@@ -222,7 +275,7 @@ export default function Header() {
       <MenuItem onClick={handleSettingsMenuOpen}>
         <IconButton size="large" edge="end" color="inherit">
           <SettingsIcon />
-          
+
         </IconButton>
         <p>Settings</p>
       </MenuItem>
@@ -315,6 +368,7 @@ export default function Header() {
       {renderMobileMenu}
       {renderMenu}
       {settingsMenu}
+      {dialog}
     </Box>
   );
 }

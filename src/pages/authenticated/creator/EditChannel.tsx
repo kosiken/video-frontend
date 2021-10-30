@@ -17,8 +17,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Channel } from '../../../models/User';
 import LoadingPageIndicator from "../../../components/LoadingPageIndicator";
 import Centered from '../../../components/Centered';
-import ApiSingleton from '../../../api/api';
-
+import CreatorApiSingleton from '../../../api/creatorApi';
 
 
 
@@ -34,7 +33,7 @@ const EditChannel = () => {
        
       } = useForm();
     useEffect(() => {
-        const Api = ApiSingleton();
+        const Api = CreatorApiSingleton();
         if (channel) {
             setLoading(false)
             return;
@@ -75,6 +74,18 @@ const EditChannel = () => {
 
     const onSubmit = (data: any) => { 
         console.log(data);
+        setLoading(true);
+        const Api = CreatorApiSingleton();
+        Api.editChannel(data)
+        .then((ch) => {
+            setChannel(ch);
+            setLoading(false);
+            console.log(ch);
+        })
+        .catch(() => {
+            alert("an error occured")
+            setLoading(false);
+        })
     }
 
     if (loading) {
@@ -126,9 +137,10 @@ const EditChannel = () => {
                                 <TextField
                                     defaultValue={channel.name}
                                     id="name"
-                                    name="name"
+                                    
                                     label="Channel Name"
                                     variant="outlined"
+                                    {...register('name')}
 
                                 />
                             </FormControl>
@@ -137,7 +149,8 @@ const EditChannel = () => {
                                 <TextField
                                     defaultValue={channel.name || ""}
                                     id="short_description"
-                                    name="short_description"
+                                    {...register('shortDescription')}
+                                    
                                     label="Channel Name"
                                     variant="outlined"
                                     multiline
@@ -152,7 +165,7 @@ const EditChannel = () => {
                                     label="Channel About"
                                     defaultValue={channel.about || "No About"}
                                     multiline
-                                    name="about"
+                                    {...register('about')}
                                     rows={6}
 
                                     variant="standard"

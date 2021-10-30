@@ -1,4 +1,5 @@
-import User, { Channel } from "../models/User";
+import User from "../models/User";
+
 import axios, { AxiosInstance } from "axios";
 import Video from "../models/Video";
 
@@ -19,8 +20,9 @@ interface IErederApi {
   logIn(options: LogInOptions): Promise<User>;
   me(): Promise<User>;
   becomeCreator(): Promise<{ isCreator: boolean }>;
-  getChannel(): Promise<Channel>;
-  allVideos():Promise<Video[]>
+  allVideos():Promise<Video[]>;
+  logout():Promise<void>;
+  //</void>
 }
 
 let test = true;
@@ -40,20 +42,33 @@ class ErederApi implements IErederApi {
       headers: { "Content-Type": "application/json" },
     });
   }
+ async logout(): Promise<void> {
+  let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+
+    await this._api.get(
+    "/logout",
+    {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    }
+  );
+
+  }
   async allVideos(): Promise<Video[]> {
     const response = await this._api.get<Video[]>("/videos");
 
     return response.data;
   }
-  async getChannel(): Promise<Channel> {
-    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
-    const response = await this._api.get<Channel>("/api/creator/channel", {
-      headers: {
-        authorization: `Bearer ${config.token}`,
-      },
-    });
-    return response.data;
-  }
+  // async getChannel(): Promise<Channel> {
+  //   let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+  //   const response = await this._api.get<Channel>("/api/creator/channel", {
+  //     headers: {
+  //       authorization: `Bearer ${config.token}`,
+  //     },
+  //   });
+  //   return response.data;
+  // }
 
   async becomeCreator(): Promise<{ isCreator: boolean }> {
     let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };

@@ -16,7 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from "@mui/icons-material/Add";
-
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -46,6 +46,8 @@ const DrawerItems: IDrawerMenuItem[] = [
   { title: "Dashboard", url: "/dashboard", Icon: DashboardIcon },
   { title: "Create Video", url: "/add-video", Icon: AddCircleIcon },
   { title: "Edit Channel", url: "/edit-channel", Icon: EditIcon },
+  { title: "Bank Account", url: "/edit-bank-account", Icon: EditIcon },
+  { title: "Analytics", url: "/analytics", Icon: AnalyticsIcon },
 
 ];
 export default function CreatorHeader(props: Props) {
