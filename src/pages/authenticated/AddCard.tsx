@@ -21,6 +21,7 @@ import User from "../../models/User";
 const schema = yup
     .object({
         billingCardNumber: yup.string().max(16).min(10).required(),
+        cvv: yup.string().length(3).required(),
 
     })
     .required();
@@ -88,8 +89,8 @@ const AddCard: React.FC = () => {
             const userApi = UserApiSignleton();
             data = { ...data, billingCardBrand: "visa", billingCardExpMonth: n[0].toString(), billingCardExpYear: n[1].toString() };
             userApi.addCard(data as IBillingDetails)
-            .then((v) => {
-                console.log(v)
+                .then((v) => {
+                    console.log(v)
                     if (user) {
                         let u: User = { ...user, billing_card_last4: v.billingCardLast4, billing_card_brand: v.billingCardBrand }
                         dispatch({ type: "login", user: u });
@@ -151,6 +152,23 @@ const AddCard: React.FC = () => {
                                 name="CardExpiry"
                                 onChange={handleChange}
 
+                            />
+                        </FormControl>
+                        <Spacer space={20} />
+
+                        <FormControl fullWidth>
+                            <TextField
+
+                                id="cvv"
+                                label="CVV"
+                                helperText={errors.cvv?.message}
+
+                                error={!!errors.billingCardNumber}
+                                variant="outlined"
+                                InputProps={{
+                                    type: "number",
+                                }}
+                                {...register("cvv")}
                             />
                         </FormControl>
                         <Spacer space={20} />

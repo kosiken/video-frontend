@@ -31,6 +31,8 @@ import ApiSignleton from "./api/api";
 import LoadingPageIndicator from './components/LoadingPageIndicator';
 import AddCard from './pages/authenticated/AddCard';
 import BankDetails from './pages/authenticated/creator/BankDetails';
+import ApiLoader from './components/ApiLoader';
+import Analytics from './pages/authenticated/creator/Analytics';
  
 let theme = createTheme({
   palette: {
@@ -69,6 +71,9 @@ function CreatorRoutes() {
         </Route>
         <Route exact path={`${path}/edit-bank-account`}>
           <BankDetails />
+        </Route>
+        <Route exact path={`${path}/analytics`}>
+          <Analytics />
         </Route>
       </Switch>
     </CreatorLayout>
@@ -125,30 +130,30 @@ function VideoApp() {
   const dispatch = useDispatch()
   let location = useLocation();
   const Api = ApiSignleton();
-
-
-
-  React.useEffect(() => {
-
-    const getUser = async () => {
-      if (user) {
-        setLoading(false);
-        return;
-      }
-      try {
-        let u = await Api.me();
-       if(u && u.email)dispatch({ type: "login", user: u });
-        setLoading(false)
-      }
-      catch (err) {
-        setLoading(false);
-      }
+  const getUser = async () => {
+    if (user) {
+      setLoading(false);
+      return;
     }
-    getUser();
+    // try {
+      let u = await Api.me();
+     if(u && u.email)dispatch({ type: "login", user: u });
+      setLoading(false)
+    // }
+    // catch (err) {
+    //   setLoading(false);
+    // }
+  }
 
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // React.useEffect(() => {
+
+
+  //   getUser();
+
+
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
 
   console.log('darkMode')
   if (
@@ -168,7 +173,8 @@ function VideoApp() {
   }
 
 
-  const mainBody = (   <Switch>
+  const mainBody = (  
+    <div><Switch>
     <Route exact path="/">
       <LayoutOpen>
         <LandingPage />
@@ -197,7 +203,9 @@ function VideoApp() {
     <Route path="/creator">
       <p>lol</p>
     </Route>
-  </Switch>)
+  </Switch>
+ 
+  </div> )
   
   return (
     <ThemeProvider theme={darkMode ? theme2 : theme}>
@@ -209,6 +217,7 @@ function VideoApp() {
         }}
       >
      {loading ? <LoadingPageIndicator /> : mainBody}
+     <ApiLoader setLoading={setLoading} request={getUser} onLoad={() => console.log('loaded')} />
       </Box>
     </ThemeProvider>
   );

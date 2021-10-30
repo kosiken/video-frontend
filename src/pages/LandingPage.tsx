@@ -6,7 +6,6 @@ import ChevronRight from "@mui/icons-material/ChevronRight";
 
 import Centered from "../components/Centered";
 import Spacer from "../components/Spacer";
-import VideoGrid from "../components/VideoGrid";
 import { Link } from "react-router-dom";
 import ApiSignleton from "../api/api";
 
@@ -119,9 +118,14 @@ function LandingPage() {
                 Get Started
               </Button>
 
-              <Button href="#explore" color="inherit">
-                Explore
-              </Button>
+           
+              <Link to="/explore"  style={{textDecoration: "none", color: 'white'}}>
+            <Button  color="inherit" endIcon={<ChevronRight/>}  variant="text">
+           
+                    Explore
+              
+            </Button>
+            </Link>
             </div>
           </Box>
         </Box>
@@ -190,27 +194,7 @@ function LandingPage() {
           </Container>
           </Box>
           <Spacer space={100} />
-          <Container>
-            <Box display="flex" alignItems="center" >
-          <Typography variant="h3" sx={{flex: 1}} id="explore">
-            Explore
-            </Typography>
-            <Link to="/explore" style={{textDecoration: "none"}}>
-            <Button   endIcon={<ChevronRight/>}  variant="text">
-           
-                    Explore
-              
-            </Button>
-            </Link>
-            </Box>
-            <Spacer space={10} />
-            <VideoGrid lg={4} videoPlaceholderCount={8} />
-      
-
-
-         
-        </Container>
-        <Spacer space={100} />
+     
 
        
         </Box>

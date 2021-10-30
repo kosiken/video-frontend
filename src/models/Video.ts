@@ -17,7 +17,8 @@ export interface VideoPurchase {
     videoPurchased: Video;
     amountPaid: number;
     accessCode: string;
-    channel: Channel;
+    channel: Channel;    createdAt:number;
+
     
     
 }

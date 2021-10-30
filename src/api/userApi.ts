@@ -11,6 +11,7 @@ export interface IBillingDetails  {
   billingCardExpYear: string;
   billingCardLast4: string;
   hasBillingCard: boolean;
+  cvv: string;
 }
 
 

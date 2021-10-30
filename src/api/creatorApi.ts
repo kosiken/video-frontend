@@ -1,18 +1,25 @@
 import { Channel } from "../models/User";
 import axios, { AxiosInstance } from "axios";
+import ViewHistory from "../models/ViewHistory";
+import Video, { Like, VideoPurchase } from "../models/Video";
+import { Subscription } from "react-hook-form/dist/utils/subject";
 
 export interface IBankAccountDetails {
   bankName: string;
   bankAccountName: string;
   bankAccountNumber: string;
 }
+type analyticsValid = "subscription" | "view" | "like" | "purchase" | "video";
 
+type Analytic =  Array<ViewHistory | Like | Video | Subscription | VideoPurchase>;
 interface ICreatorApi {
   _api: AxiosInstance;
   getChannel(): Promise<Channel>;
   editChannel(channel: any): Promise<Channel>;
   getBankDetails(): Promise<IBankAccountDetails>;
   updateBankDetails(data: IBankAccountDetails): Promise<IBankAccountDetails>;
+  analytics(model: analyticsValid, populate?: string, since?: Date): Promise<Analytic>;
+  
 }
 
 class CreatorApi implements ICreatorApi {
@@ -23,6 +30,32 @@ class CreatorApi implements ICreatorApi {
       headers: { "Content-Type": "application/json" },
     });
   }
+  async analytics(model: analyticsValid,populate?: string, since?: Date): Promise<Analytic> {
+
+    let url = `/analytics/${model}`;
+    let str = []
+    if(populate) {
+      str.push('populate=' + populate)
+    }
+    if(since ) {
+       str.push('since=' +  since.getTime())
+    }
+
+    if(str.length > 0) {
+      let s = '?' +  (str.length > 1  ? str.join('&'): str[0]);
+      url+= s;
+
+    }
+
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+    const response = await this._api.get<Analytic>(url, {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+    return response.data;
+  }
+  
   async updateBankDetails(
     data: IBankAccountDetails
   ): Promise<IBankAccountDetails> {

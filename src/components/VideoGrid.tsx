@@ -16,6 +16,7 @@ import Video from "../models/Video";
 import { Channel } from "../models/User";
 import { UserChannel } from "../constants";
 import ApiSignleton from "../api/api";
+import ApiLoader from './ApiLoader'
 // import Video from '../models/Video'; 
 
 type VideoGridProps = {
@@ -43,38 +44,28 @@ const VideoGrid: React.FC<VideoGridProps> = ({
   const items = new Array(videoPlaceholderCount).fill(0)
   const [done, setDone] = useState(false)
 
-  let retry = () => {
+  let retry = async () => {
     if (videos.length > 0) {
       setDone(true)
       return;
 
     }
     const Api = ApiSignleton();
-    Api.allVideos().then((v) => {
-      setVideos(v);
-      setDone(true)
-    })
-      .catch((err) => {
-        console.log(err);
-        setDone(true)
-      })
+    let v = await Api.allVideos()
+    setVideos(v);
+    return v;
+    // setDone(true)
+
+    // .catch((err) => {
+    //   console.log(err);
+    //   setDone(true)
+    // })
   }
 
   useEffect(() => {
-
-  const Api = ApiSignleton();
-  Api.allVideos().then((v) => {
-    setVideos(v);
-    setDone(true)
-  })
-    .catch((err) => {
-      console.log(err);
-      setDone(true)
-    })
-
-
-
-  },[])
+console.log(videos)
+setDone(videos.length > 0)
+  }, [videos])
 
   const getGrid = () => {
     if (done) {
@@ -200,7 +191,17 @@ const VideoGrid: React.FC<VideoGridProps> = ({
     );
   };
 
-  return <Grid container>{getGrid()}</Grid>;
+  return (<React.Fragment><Grid container>{getGrid()}</Grid>
+
+    <ApiLoader setLoading={(l) => setDone(l)} request={retry} onFail={(m) => {
+      console.log("In grid");
+      setDone(true);
+
+    }} onLoad={(v) => {
+      console.log(videos)
+      console.log(v);
+      setVideos(v)}} />
+  </React.Fragment>);
 };
 
 export default VideoGrid;

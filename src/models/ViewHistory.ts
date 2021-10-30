@@ -6,5 +6,8 @@ export default interface ViewHistory {
     userWhoViewed: string;
     video: Video;
     channel: Channel;
+    createdAt:number;
+    duration: number;
+    isPayedView: boolean;
     
 }
