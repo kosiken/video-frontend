@@ -122,6 +122,7 @@ const ViewHistoryList: ViewHistory[] = [
     },
   },
   
+  
 ];
 
 const Purchases: VideoPurchase[] = ViewHistoryList.map(v => {
