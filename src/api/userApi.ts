@@ -2,6 +2,7 @@ import User, { Channel, Subscription } from "../models/User";
 import axios, { AxiosInstance } from "axios";
 import Video from "../models/Video";
 import { sanitizedChannel } from "../utils/functions";
+import ViewHistory from "../models/ViewHistory";
 
 interface IUserApi {
   _api: AxiosInstance;
@@ -9,7 +10,8 @@ interface IUserApi {
   getFollowing(): Promise<Subscription[]>;
   updateDetails(body: any): Promise<User>;
   unSubscribe(channel: string): Promise<{deleted: boolean;}>;
-  subscribe(channel: string): Promise<Subscription>
+  subscribe(channel: string): Promise<Subscription>;
+  viewHistory(): Promise<ViewHistory>;
 }
 
 class UserApi implements IUserApi {
@@ -20,6 +22,9 @@ class UserApi implements IUserApi {
       baseURL: "http://localhost:1337/api/user",
       headers: { "Content-Type": "application/json" },
     });
+  }
+  viewHistory(): Promise<ViewHistory> {
+    throw new Error("Method not implemented.");
   }
   async subscribe(channel: string): Promise<Subscription> {
     let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
