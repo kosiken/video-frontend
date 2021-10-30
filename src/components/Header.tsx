@@ -157,6 +157,8 @@ export default function Header() {
       )}
 
       <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
+{/* TODO  handle logout */}
+      <MenuItem>Logout</MenuItem>
     </Menu>
   );
 

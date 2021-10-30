@@ -1,4 +1,4 @@
-import React  from "react";
+import React, { useState, useEffect } from "react";
 
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -10,16 +10,19 @@ import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Skeleton from "@mui/material/Skeleton";
 import Grid, { GridSize } from "@mui/material/Grid";
-import useDelayed from "../hooks/useDelayed";
 import ControlledText from "./ControlledText";
 import Centered from "./Centered";
+import Video from "../models/Video";
+import { Channel } from "../models/User";
+import { UserChannel } from "../constants";
+import ApiSignleton from "../api/api";
 // import Video from '../models/Video'; 
 
 type VideoGridProps = {
   videoPlaceholderCount?: number;
   loggedIn?: boolean;
   xs?: GridSize;
-  sm?:GridSize;
+  sm?: GridSize;
   lg?: GridSize;
   md?: GridSize;
   prefix?: string;
@@ -28,76 +31,117 @@ type VideoGridProps = {
 const VideoGrid: React.FC<VideoGridProps> = ({
   videoPlaceholderCount = 6,
   loggedIn = false,
-  xs= 12,
+  xs = 12,
   sm = 6,
   md = 4,
   lg = 3,
   prefix = "/open"
 }) => {
- 
-  // const [videos, setVideos] = useState<Video[]>([]);
-  const items = new Array(videoPlaceholderCount).fill(0);
-  let done = useDelayed<boolean>(false, true, 1 * 1000);
+
+  const [videos, setVideos] = useState<Video[]>([]);
+
+  const items = new Array(videoPlaceholderCount).fill(0)
+  const [done, setDone] = useState(false)
+
+  let retry = () => {
+    if (videos.length > 0) {
+      setDone(true)
+      return;
+
+    }
+    const Api = ApiSignleton();
+    Api.allVideos().then((v) => {
+      setVideos(v);
+      setDone(true)
+    })
+      .catch((err) => {
+        console.log(err);
+        setDone(true)
+      })
+  }
+
+  useEffect(() => {
+
+  const Api = ApiSignleton();
+  Api.allVideos().then((v) => {
+    setVideos(v);
+    setDone(true)
+  })
+    .catch((err) => {
+      console.log(err);
+      setDone(true)
+    })
+
+
+
+  },[])
 
   const getGrid = () => {
     if (done) {
       return (
         <>
-          {items.map((item, index) => {
+          {videos.map((item, index) => {
+
+            let channel: Channel = UserChannel;
+            if (typeof item.channel !== "string") {
+
+              channel = item.channel;
+            }
             return (
-              <Grid  item key={"video" + index} lg={lg} md={md} sm={sm} xs={xs} style={{minWidth: '260px'}}>
-              <Centered>
-              <Card sx={{ maxWidth: 345, m: 2, minHeight: 302 }}>
-                  <CardHeader
-                    avatar={
-                      <a
-                        style={{ textDecoration: "none" }}
-                        href="/channels/intresting-channel-78767367376"
-                      >
-                        <Avatar
-                          alt="Intresting Channel"
-                          src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
-                        />
-                      </a>
-                    }
-                    action={
-                      loggedIn && (
-                        <IconButton aria-label="settings">
-                          <MoreVertIcon />
-                        </IconButton>
-                      )
-                    }
-                    title={"Intresting Channel"}
-                    subheader={"5 hours ago"}
-                  />
-                  <a
-                    style={{ textDecoration: "none" }}
-                    href={`${prefix}/watch/intresting-channel-78767367376`}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image="/images/hq720.webp"
-                      alt="Nicola Sturgeon on a TED talk stage"
-                      sx={{ fontSize: "12px" , minHeight: 150,}}
-
+              <Grid item key={"video" + index} lg={lg} md={md} sm={sm} xs={xs} style={{ minWidth: '260px' }}>
+                <Centered>
+                  <Card sx={{ maxWidth: 455, m: 2 }}>
+                    <CardHeader
+                      style={{ textDecoration: "none", fontSize: "0.9em" }}
+                      avatar={
+                        <a
+                          style={{ textDecoration: "none", fontSize: "0.9em" }}
+                          href={(`/channel/${channel.id}`)}
+                        >
+                          <Avatar
+                            alt="Intresting Channel"
+                            src={channel.logo}
+                          />
+                        </a>
+                      }
+                      action={
+                        loggedIn && (
+                          <IconButton aria-label="settings">
+                            <MoreVertIcon />
+                          </IconButton>
+                        )
+                      }
+                      title={channel.name}
+                      subheader={"5 hours ago"}
                     />
-                  </a>
+                    <a
+                      style={{ textDecoration: "none" }}
+                      href={`${prefix}/watch/${item.id}`}
+                    >
+                      <CardMedia
+                        component="img"
 
-                  <CardContent>
-                    <ControlledText
-                      defaultComponent="span"
-                      props={{
-                        color: "text.secondary",
-                        variant: "body2",
-                        component: "p",
-                        text: " For Norwegian football & the club it's a fantastic result - Bodo/Glimt CEO on beating Roma 6-1",
-                        length: 60,
-                      }}
-                    />
-                  </CardContent>
-                </Card>
-              </Centered>
+                        image={item.thumbnail}
+                        alt={item.thumbnail}
+                        sx={{ fontSize: "12px" }}
+
+                      />
+                    </a>
+
+                    <CardContent>
+                      <ControlledText
+                        defaultComponent="span"
+                        props={{
+                          color: "text.secondary",
+                          variant: "body2",
+                          component: "p",
+                          text: item.title,
+                          length: 60,
+                        }}
+                      />
+                    </CardContent>
+                  </Card>
+                </Centered>
               </Grid>
             );
           })}

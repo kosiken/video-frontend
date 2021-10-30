@@ -204,7 +204,7 @@ function LandingPage() {
             </Link>
             </Box>
             <Spacer space={10} />
-            <VideoGrid videoPlaceholderCount={8} />
+            <VideoGrid lg={4} videoPlaceholderCount={8} />
       
 
 

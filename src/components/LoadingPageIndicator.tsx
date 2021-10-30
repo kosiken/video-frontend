@@ -6,8 +6,8 @@ import Centered from './Centered';
 
 
 
-const LoadingPageIndicator: React.FC = () => (
-    <Centered sx={{ height: '100vh' }}>
+const LoadingPageIndicator: React.FC<{height?: string}> = ({height = '100vh'}) => (
+    <Centered sx={{ height }}>
         <Box> <CircularProgress />
             <p>Loading</p></Box>
 

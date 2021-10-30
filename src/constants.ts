@@ -1,7 +1,7 @@
 import User, { Channel } from "./models/User";
 
 export const DefaultUser: User = {
-  id: 1,
+  id: "1",
   fullName: "Allison Kosy",
   
   email: "allisonkosy@gmail.com",
@@ -13,8 +13,8 @@ export const DefaultUser: User = {
 };
 
 export const UserChannel: Channel = {
-  user_id: 1,
-  id: 1,
+  user_id: "1",
+  id: "1",
 
   name: "Allison Kosy",
   short_description:

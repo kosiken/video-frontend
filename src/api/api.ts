@@ -1,5 +1,6 @@
 import User, { Channel } from "../models/User";
 import axios, { AxiosInstance } from "axios";
+import Video from "../models/Video";
 
 export type SignInOptions = {
   emailAddress: string;
@@ -19,6 +20,7 @@ interface IErederApi {
   me(): Promise<User>;
   becomeCreator(): Promise<{ isCreator: boolean }>;
   getChannel(): Promise<Channel>;
+  allVideos():Promise<Video[]>
 }
 
 let test = true;
@@ -38,9 +40,14 @@ class ErederApi implements IErederApi {
       headers: { "Content-Type": "application/json" },
     });
   }
+  async allVideos(): Promise<Video[]> {
+    const response = await this._api.get<Video[]>("/videos");
+
+    return response.data;
+  }
   async getChannel(): Promise<Channel> {
     let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
-    const response = await this._api.get<Channel, any>("/api/creator/channel", {
+    const response = await this._api.get<Channel>("/api/creator/channel", {
       headers: {
         authorization: `Bearer ${config.token}`,
       },
@@ -83,6 +90,8 @@ class ErederApi implements IErederApi {
     setToken(response.data);
     return response.data;
   }
+
+  
 }
 
 export default function ApiSignleton(): ErederApi {

@@ -10,16 +10,17 @@ import IconButton from "@mui/material/IconButton";
 import { AppState } from "../../store";
 import Container from "@mui/material/Container";
 import Badge from "@mui/material/Badge";
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/system";
 import Spacer from "../../components/Spacer";
 import Button from "@mui/material/Button";
+import LinearProgress from "@mui/material/LinearProgress";
 import Divider from "@mui/material/Divider";
 import User, { Channel } from "../../models/User";
 import AppLink from "../../components/AppLink";
@@ -27,8 +28,10 @@ import Snackbar from "@mui/material/Snackbar";
 import CloseIcon from "@mui/icons-material/Close";
 import ViewHistory from "../../models/ViewHistory";
 import { shortenText } from "../../utils/functions";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { VideoPurchase } from "../../models/Video";
+import UserApiSignleton from "../../api/userApi";
 
 
 interface KosyTabProps {
@@ -62,22 +65,22 @@ const Countries: CountryItem[] = [
 let id = 0;
 const ChannelsList: Channel[] = new Array<Channel>(12)
   .fill({
-    id: 0,
+    id: "0",
     logo: "/images/me.jpeg",
     name: "Intresting Channel",
     short_description: "A good Channel",
-    user_id: 10,
+    user_id: "10",
     follower_count: 2495,
   })
   .map((c) => {
-    return { ...c, name: c.name + ++id, id: id };
+    return { ...c, name: c.name + (++id), id: `${id}` };
   });
 
 const ViewHistoryList: ViewHistory[] = [
   {
-    user_id: 1,
+    userWhoViewed: "1",
     video: {
-      channel: 1,
+      channel: "1",
       id: "intresting-channel-78767367376",
       channel_name: "Cool Channel",
       thumbnail: "/images/hq720.webp",
@@ -85,27 +88,28 @@ const ViewHistoryList: ViewHistory[] = [
       description: "A description",
       uploaded: new Date(2020, 10, 22),
       duration: 39409,
-      video_type: "public",views: 10049944
+      video_type: "public", views: 10049944, url: ''
     },
   },
 
   {
-    user_id: 1,
-    video: {  id: "intresting-channel-78767367376",
-      channel: 2, channel_name: "Cool Channel2",
+    userWhoViewed: "1",
+    video: {
+      id: "intresting-channel-78767367376",
+      channel: "2", channel_name: "Cool Channel2",
       thumbnail: "/images/hq720.webp",
       title: "Another Cool Video",
       description: "A cooler description",
       uploaded: new Date(2019, 10, 22),
       duration: 39409,
-      video_type: "public",views: 1004
+      video_type: "public", views: 1004, url: ''
     },
   },
 
   {
-    user_id: 1,
+    userWhoViewed: "1",
     video: {
-      channel: 2,  id: "intresting-channel-78767367376",
+      channel: "2", id: "intresting-channel-78767367376",
       thumbnail: "/images/hq720.webp", channel_name: "Coolest Channel",
       title: "A Very good Video",
       description: `Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corrupti
@@ -114,28 +118,87 @@ const ViewHistoryList: ViewHistory[] = [
       magni odit error perspiciatis quod!`,
       uploaded: new Date(2021, 10, 22),
       duration: 39409,
-      video_type: "public",views: 1004994
+      video_type: "public", views: 1004994, url: ''
     },
   },
 ];
 
 const Purchases: VideoPurchase[] = ViewHistoryList.map(v => {
-  return ({...v, price: 900} as VideoPurchase)
+  return ({ ...v, user_id: '1', userWhoViewed: undefined,  price: 900 } as VideoPurchase)
 })
 
 
 const TabOne: React.FC<{ user?: User }> = ({ user }) => {
-  const theme = useTheme();
-  const [country, setCountry] = useState(Countries[0].value);
-  const [dob] = useState<Date>();
-  const handleChange = (event: SelectChangeEvent<string>) => {
-    setCountry(event.target.value);
-    console.log(dob);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false)
+  const handleClick = (m: string) => {
+    setMessage(m);
+
+
+
+    setOpen(true);
   };
+
+  const handleClose = (
+    event: React.SyntheticEvent | React.MouseEvent,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  }
+  const theme = useTheme();
+  const {
+    register,
+    handleSubmit,
+
+  } = useForm({});
+  const [country] = useState(Countries[0].value);
+  const userApi = UserApiSignleton()
+  const onSubmit = (data: any) => {
+    setLoading(true);
+    let keys = Object.keys(data);
+    let v: any = { ...user };
+    for (let key of keys) {
+
+      if (!data[key] || (v && (data[key] === (v[key])))) delete data[key];
+
+    }
+
+    userApi.updateDetails(data)
+      .then(() => {
+
+        setLoading(false);
+        handleClick('Details Updated successfully')
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+        handleClick('An error occured while trying to update')
+      })
+
+  };
+  const action = (
+
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={handleClose}
+    >
+
+      <CloseIcon fontSize="small" />
+    </IconButton>
+
+  );
+
 
   return (
     <Container maxWidth="md">
-      <Typography sx={{ mt: 2, mb: 2 , color: 'text.primary'}}  fontWeight="bold">
+      <Typography sx={{ mt: 2, mb: 2, color: 'text.primary' }} fontWeight="bold">
         Profile Picture
       </Typography>
       <Box sx={{ mt: 2 }}>
@@ -156,8 +219,9 @@ const TabOne: React.FC<{ user?: User }> = ({ user }) => {
         </Badge>
         <Spacer space={20} />
         <Divider variant="middle" /> <Spacer space={20} />
-        <form style={{ maxWidth: "500px" }}>
-          <Typography sx={{ mt: 2, mb: 2 , color: 'text.primary'}} fontWeight="bold">
+        <form style={{ maxWidth: "500px" }} onSubmit={handleSubmit(onSubmit)}>
+          {loading && <LinearProgress />}
+          <Typography sx={{ mt: 2, mb: 2, color: 'text.primary' }} fontWeight="bold">
             Contact Details
           </Typography>
           <FormControl fullWidth>
@@ -167,8 +231,10 @@ const TabOne: React.FC<{ user?: User }> = ({ user }) => {
               label="Full Name"
               variant="outlined"
               InputProps={{
-                type: "fullName",
+                type: "text",
               }}
+
+              {...register("fullName")}
             />
           </FormControl>
           <Spacer space={20} />
@@ -178,6 +244,10 @@ const TabOne: React.FC<{ user?: User }> = ({ user }) => {
               defaultValue={user?.email}
               label="Email"
               variant="outlined"
+              InputProps={{
+                type: "email",
+              }}
+              {...register("emailAddress")}
             />
           </FormControl>
           <Spacer space={20} />
@@ -186,8 +256,10 @@ const TabOne: React.FC<{ user?: User }> = ({ user }) => {
             <TextField
               variant="filled"
               type="date"
+              defaultValue={user?.birthdate}
               InputProps={{ inputProps: { max: "12-12-2021" } }}
-              onChange={(e) => {}}
+
+              {...register("dob")}
             />
           </FormControl>
           <Spacer space={20} />
@@ -200,7 +272,8 @@ const TabOne: React.FC<{ user?: User }> = ({ user }) => {
               id="demo-simple-select"
               value={country}
               label="Country"
-              onChange={handleChange}
+
+              {...register("country")}
             >
               {Countries.map(({ value, title }, index) => (
                 <MenuItem key={"country" + index} value={value}>
@@ -210,37 +283,75 @@ const TabOne: React.FC<{ user?: User }> = ({ user }) => {
             </Select>
           </FormControl>
           <Spacer space={20} />
-          <Button disabled type="submit" variant="contained">
+          <Button type="submit" variant="contained">
             Update Details
           </Button>
         </form>
       </Box>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={message}
+        action={action}
+      />
     </Container>
   );
 };
 
-const TabTwo: React.FC<KosyTabProps> =  ({showing}) => {
+const TabTwo: React.FC<KosyTabProps> = ({ showing }) => {
   const [shown, setShown] = useState(false);
-  useEffect(() => {
-    if(!shown && showing) {
-      console.log("request two");
-      setShown(true)
-    }
-
-  }, [shown, showing])
+  const [loadingResponse, setLoadingResponse] = useState(false)
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [channels, setChannels] = useState(ChannelsList);
+  const [channels, setChannels] = useState<Channel[]>([]);
   const [channelUnfollowed, setChannelUnfollowed] = useState<Channel | null>(
     null
   );
 
-  const handleClick = (channelToUnfollow: Channel) => {
-    setMessage("unfollowed " + channelToUnfollow.name);
-    setChannelUnfollowed(channelToUnfollow);
-    setChannels(channels.filter((c) => c.id !== channelToUnfollow.id));
+  useEffect(() => {
+    if (!shown && showing) {
+      console.log("request two");
+      setShown(true)
 
-    setOpen(true);
+      const userApi = UserApiSignleton();
+
+      userApi.getFollowing()
+        .then((subs) => {
+          setChannels(subs.map(s => s.channel))
+        })
+        .catch(err => {
+
+          setOpen(true);
+          setMessage(err.message)
+
+        })
+    }
+
+  }, [shown, showing])
+  const handleClick = (channelToUnfollow: Channel) => {
+    if (loadingResponse) return;
+    const userApi = UserApiSignleton();
+    setLoadingResponse(true);
+
+    userApi.unSubscribe(channelToUnfollow.id)
+      .then(ans => {
+        console.log(ans);
+        setMessage("unfollowed " + channelToUnfollow.name);
+        setChannelUnfollowed(channelToUnfollow);
+        setChannels(channels.filter((c) => c.id !== channelToUnfollow.id));
+        setLoadingResponse(false)
+        setOpen(true);
+      })
+      .catch(err => {
+        // TODO handle error properly
+        setLoadingResponse(false);
+        setMessage("An error occured")
+        setOpen(true);
+
+      })
+
+
   };
 
   const handleClose = (
@@ -260,9 +371,27 @@ const TabTwo: React.FC<KosyTabProps> =  ({showing}) => {
 
   const handleUndo = (event: React.SyntheticEvent | React.MouseEvent) => {
     if (channelUnfollowed !== null) {
-      setChannels([channelUnfollowed, ...channels]);
+      if (loadingResponse) return;
+      const userApi = UserApiSignleton();
+      setLoadingResponse(true);
+
+      userApi.subscribe(channelUnfollowed.id)
+        .then(sub => {
+          setChannels([sub.channel, ...channels]);
+          setChannelUnfollowed(null);
+          setMessage("Subscribed to " + sub.channel.name)
+          setLoadingResponse(false)
+          setOpen(true);
+        }).catch(err => {
+          // TODO handle error properly
+          setLoadingResponse(false);
+          setMessage("An error occured")
+          setOpen(true);
+
+        })
+
     }
-    handleClose(event, "undo");
+   // handleClose(event, "undo");
   };
 
   const action = (
@@ -276,7 +405,7 @@ const TabTwo: React.FC<KosyTabProps> =  ({showing}) => {
         color="inherit"
         onClick={handleClose}
       >
-  
+
         <CloseIcon fontSize="small" />
       </IconButton>
     </React.Fragment>
@@ -286,11 +415,11 @@ const TabTwo: React.FC<KosyTabProps> =  ({showing}) => {
     <Container maxWidth="sm" style={{ paddingTop: "2em" }}>
       {channels.map((creator, index) => {
         return (
-          <Box display="flex"  key={"channel-" + index}>
+          <Box display="flex" key={"channel-" + index}>
             <AppLink
-              to={"#/channel/" + index}
-             
-              style={{  marginBottom: 10, flex: 1,  display: "flex", }}
+              to={"main/channel/" + creator.id}
+
+              style={{ marginBottom: 10, flex: 1, display: "flex", }}
               sx={{
                 textTransform: "none",
                 display: "flex",
@@ -301,10 +430,10 @@ const TabTwo: React.FC<KosyTabProps> =  ({showing}) => {
             >
               <Avatar alt={creator.name} src={creator.logo} />
               <Box padding="0 0 0 1em">
-                <Typography fontWeight="bold" sx={{color: 'text.primary'}}>
+                <Typography fontWeight="bold" sx={{ color: 'text.primary' }}>
                   {creator.name}
                 </Typography>
-                <Typography  component="p" variant="subtitle2" color="GrayText" align="left">
+                <Typography component="p" variant="subtitle2" color="GrayText" align="left">
                   {creator.follower_count +
                     (creator.follower_count === 1
                       ? " follower"
@@ -314,6 +443,7 @@ const TabTwo: React.FC<KosyTabProps> =  ({showing}) => {
             </AppLink>
 
             <Button
+
               style={{ display: "inline" }}
               onClick={() => handleClick(creator)}
             >
@@ -334,41 +464,41 @@ const TabTwo: React.FC<KosyTabProps> =  ({showing}) => {
 };
 
 
-const TabThree: React.FC<KosyTabProps> =  ({showing}) => {
+const TabThree: React.FC<KosyTabProps> = ({ showing }) => {
   const [shown, setShown] = useState(false);
   useEffect(() => {
-    if(!shown && showing) {
+    if (!shown && showing) {
       console.log("request three");
       setShown(true)
     }
 
   }, [shown, showing])
-const [viewHistory, /* setViewHistory */] = useState(ViewHistoryList);
+  const [viewHistory, /* setViewHistory */] = useState(ViewHistoryList);
 
   return (
     <Container maxWidth="md" >
-    <Spacer space={30} />
-      {viewHistory.map(({video}, index) => {
-      return ( <Box key={'view-history-' + index} display="flex" alignItems="center">
+      <Spacer space={30} />
+      {viewHistory.map(({ video }, index) => {
+        return (<Box key={'view-history-' + index} display="flex" alignItems="center">
 
-          <div style={{width: "40%", maxWidth: '230px'}}>
-           <Link to={"/watch/" + video.id} > 
-          <img style={{display: 'block', width: '100%'}} src={video.thumbnail} alt={video.title} />
-          </Link>
+          <div style={{ width: "40%", maxWidth: '230px' }}>
+            <Link to={"/watch/" + video.id} >
+              <img style={{ display: 'block', width: '100%' }} src={video.thumbnail} alt={video.title} />
+            </Link>
           </div>
           <Box flex={1} padding="1em">
-          <Typography fontWeight="bold" sx={{color: 'text.primary'}}>
-                  {video.title}
-                </Typography>
-                <Typography sx={{color: 'text.primary'}}  fontSize={".85rem"} >
-                  {shortenText(video.description, 100)}
-                </Typography>
-                <AppLink to={"/channel/" + ((typeof video.channel === "number")? video.channel : video.channel.id)} sx={{mt: 1, textTransform: 'none', padding: 0}}>
-                <Typography sx={{color: 'text.primary'}} variant="subtitle2"  >
-                  {video.channel_name}
-                </Typography>
-                </AppLink>
-             
+            <Typography fontWeight="bold" sx={{ color: 'text.primary' }}>
+              {video.title}
+            </Typography>
+            <Typography sx={{ color: 'text.primary' }} fontSize={".85rem"} >
+              {shortenText(video.description, 100)}
+            </Typography>
+            <AppLink to={"/channel/" + ((typeof video.channel === "number") ? video.channel : (video.channel as Channel).id)} sx={{ mt: 1, textTransform: 'none', padding: 0 }}>
+              <Typography sx={{ color: 'text.primary' }} variant="subtitle2"  >
+                {video.channel_name}
+              </Typography>
+            </AppLink>
+
           </Box>
 
         </Box>)
@@ -378,79 +508,95 @@ const [viewHistory, /* setViewHistory */] = useState(ViewHistoryList);
 }
 
 
-const TabFour: React.FC<KosyTabProps> = ({showing}) => {
+const TabFour: React.FC<KosyTabProps> = ({ showing }) => {
   const [shown, setShown] = useState(false);
   useEffect(() => {
-    if(!shown && showing) {
+    if (!shown && showing) {
       console.log("request four");
       setShown(true)
     }
 
   }, [shown, showing])
   const [purchases, /* setPurchase */] = useState(Purchases);
- 
 
 
-  
-    return (
-      <Container maxWidth="md" >
+
+
+  return (
+    <Container maxWidth="md" >
       <Spacer space={30} />
-        {purchases.map(({video, price}, index) => {
-        return ( <Box key={'view-history-' + index} display="flex" alignItems="center">
-  
-            <div style={{width: "40%", maxWidth: '230px'}}>
-             <Link to={"/watch/" + video.id} > 
-            <img style={{display: 'block', width: '100%'}} src={video.thumbnail} alt={video.title} />
+      {purchases.map(({ video, price }, index) => {
+        return (<Box key={'view-history-' + index} display="flex" alignItems="center">
+
+          <div style={{ width: "40%", maxWidth: '230px' }}>
+            <Link to={"/watch/" + video.id} >
+              <img style={{ display: 'block', width: '100%' }} src={video.thumbnail} alt={video.title} />
             </Link>
-            </div>
-            <Box flex={1} padding="1em">
-            <Typography sx={{color: 'text.primary'}} fontWeight="bold" >
-                    {video.title}
-                  </Typography>
-                  <Typography sx={{color: 'text.primary'}} fontSize={".85rem"} >
-                    {shortenText(video.description, 80)}
-                  </Typography>
-              
-                  <AppLink to={"/channel/" + ((typeof video.channel === "number")? video.channel : video.channel.id)} sx={{mt: 1, textTransform: 'none', padding: 0}}>
-                  <Typography variant="subtitle2"  >
-                    {video.channel_name}
-                  </Typography>
-                  </AppLink>
-                  <Typography sx={{color: 'success.main'}} fontWeight="bold" component="p" variant="caption"  >
-                    {price}(NGN)
-                  </Typography>
-            </Box>
-  
-          </Box>)
-        })}
-      </Container>
-    )
-  }
+          </div>
+          <Box flex={1} padding="1em">
+            <Typography sx={{ color: 'text.primary' }} fontWeight="bold" >
+              {video.title}
+            </Typography>
+            <Typography sx={{ color: 'text.primary' }} fontSize={".85rem"} >
+              {shortenText(video.description, 80)}
+            </Typography>
+
+            <AppLink to={"/channel/" + ((typeof video.channel === "string") ? video.channel : video.channel.id)} sx={{ mt: 1, textTransform: 'none', padding: 0 }}>
+              <Typography variant="subtitle2"  >
+                {video.channel_name}
+              </Typography>
+            </AppLink>
+            <Typography sx={{ color: 'success.main' }} fontWeight="bold" component="p" variant="caption"  >
+              {price}(NGN)
+            </Typography>
+          </Box>
+
+        </Box>)
+      })}
+    </Container>
+  )
+}
 
 const Profile = () => {
-  const TabNames= ["Profile", "Channels", "History", "Purchases"]
+  const TabNames = ["Profile", "Channels", "History", "Purchases"]
   const user = useSelector((state: AppState) => state.auth.user);
   const [value, setValue] = useState(0);
 
+  useEffect(() => {
+    let pathName = window.location.hash.slice(1)
+    if (pathName) {
+      const dictionary: any = {};
+      TabNames.forEach((name, index) => {
+        dictionary[name.toLocaleLowerCase()] = index;
+      })
+      dictionary["channel"] = 1;
+      let index = dictionary[pathName];
+      if (index) {
+        setValue(index)
+      }
+
+    }
+
+  }, [])
   const handleChange1 = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  
+
   return (
     <Box style={{ marginTop: "4em", position: "relative" }}>
       <Helmet>
 
-<title>{user?.fullName + " / " + TabNames[value]}</title>
+        <title>{user?.fullName + " / " + TabNames[value]}</title>
 
-</Helmet> 
+      </Helmet>
       <Paper style={{ padding: "1em 0 0", border: 'none', boxShadow: 'none' }} elevation={0}>
         <Container maxWidth="md">
           <Typography variant="h5">{user?.fullName || "None"}</Typography>
         </Container>
       </Paper>
 
-      <Paper style={{ position: "sticky", top: 64, left: 0, zIndex: 99, borderTop: 'none'}} square>
+      <Paper style={{ position: "sticky", top: 64, left: 0, zIndex: 99, borderTop: 'none' }} square>
         <Container maxWidth="md">
           <Box
             sx={{
@@ -477,19 +623,19 @@ const Profile = () => {
         </Container>
       </Paper>
 
-     <Box style={{display: (value === 0 ? 'block' : 'none')}}>
-     <TabOne user={user}  />
-       </Box>
-       <Box style={{display: (value === 1 ? 'block' : 'none')}}>
-     <TabTwo showing={value === 1} />
-       </Box>
-       <Box style={{display: (value === 2 ? 'block' : 'none')}}>
-     <TabThree showing={value === 2}  />
-       </Box>
+      <Box style={{ display: (value === 0 ? 'block' : 'none') }}>
+        <TabOne user={user} />
+      </Box>
+      <Box style={{ display: (value === 1 ? 'block' : 'none') }}>
+        <TabTwo showing={value === 1} />
+      </Box>
+      <Box style={{ display: (value === 2 ? 'block' : 'none') }}>
+        <TabThree showing={value === 2} />
+      </Box>
 
-       <Box style={{display: (value === 3 ? 'block' : 'none')}}>
-     <TabFour showing={value === 3} />
-       </Box>
+      <Box style={{ display: (value === 3 ? 'block' : 'none') }}>
+        <TabFour showing={value === 3} />
+      </Box>
       <Spacer space={30} />
 
 

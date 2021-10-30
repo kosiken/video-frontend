@@ -1,3 +1,5 @@
+import { Channel } from "../models/User";
+
 export function shortenText(text: string, max: number): string {
     
     if(text.length > max) return (text.slice(0, max - 3) + "...")
@@ -15,3 +17,24 @@ export function toHHMMSS(secs: number) {
       .filter((v, i) => v !== "00" || i > 0)
       .join(":");
   };
+
+  export const sanitizedChannel = function (channel: any): Channel {
+    
+
+    const sanitizedChannel: Channel = {
+      id: channel.id,
+      user_id: channel.user,
+      name: channel.name,
+      about: channel.about,
+      short_description: channel.shortDescription,
+      logo: channel.logo,
+      banner: channel.banner,
+      follower_count: channel.followerCount,
+      like_count: channel.likeCount,
+      video_count: channel.videoCount,
+      total_views: channel.totalViews
+    };
+
+    return sanitizedChannel;
+    // TODO
+  }
