@@ -292,7 +292,7 @@ const CreatorDashboard = () => {
               </Typography>
 
               <Typography paragraph sx={{ mb: 1 }}>
-                {channel.video_count || "Unavailable"}
+                {channel.video_count || "0"}
               </Typography>
 
               <Typography variant="caption" color="GrayText" style={{ display: 'block' }} sx={{ mt: 1 }}>
@@ -300,7 +300,7 @@ const CreatorDashboard = () => {
               </Typography>
 
               <Typography paragraph sx={{ mb: 1 }}>
-                {channel.total_views || "Unavailable"}
+                {channel.total_views || "0"}
               </Typography>
 
 

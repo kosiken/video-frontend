@@ -53,7 +53,7 @@ const DrawerItems: IDrawerMenuItem[] = [
   { title: "Income", url: "/income", Icon: AccountBalanceWalletIcon },
 
 ];
-export default function CreatorHeader(props: Props) {
+export default function  AdminHeader(props: Props) {
   let location = useLocation();
   const dispatch = useDispatch();
   // const state = useSelector((state: AppState) => state.settings.darkMode);
@@ -111,7 +111,7 @@ export default function CreatorHeader(props: Props) {
       <Divider />
       <List>
         {DrawerItems.map((Item, index) => {
-          const to = ('/creator' + Item.url) 
+          const to = ('/admin' + Item.url) 
             const selected = to === location.pathname
           return (
             <AppLink to={to} doNotUseButton key={'ereder-drawer-item' + index}>
@@ -155,7 +155,7 @@ export default function CreatorHeader(props: Props) {
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar
-        color="default"
+        color="primary"
         elevation={0}
         position="fixed"
         style={{ top: 0 }}
@@ -175,21 +175,10 @@ export default function CreatorHeader(props: Props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Ereder Creator
+            Ereder Admin
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <AppLink to="/creator/add-video" doNotUseButton>
-          <Tooltip title="Create Video">
-            <IconButton
-             
-              size="large"
-              edge="end"
-              color="inherit"
-            >
-              <AddIcon />
-            </IconButton>
-          </Tooltip>
-          </AppLink>
+      
           <Tooltip title="Settings">
             <IconButton
               onClick={handleSettingsMenuOpen}

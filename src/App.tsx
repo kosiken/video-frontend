@@ -34,6 +34,7 @@ import BankDetails from './pages/authenticated/creator/BankDetails';
 import ApiLoader from './components/ApiLoader';
 import Analytics from './pages/authenticated/creator/Analytics';
 import AddVideo from './pages/authenticated/creator/AddVideo';
+import Wallet from './pages/authenticated/creator/Wallet';
  
 let theme = createTheme({
   palette: {
@@ -61,6 +62,7 @@ let theme2 = createTheme({
 function CreatorRoutes() {
   let { path } = useRouteMatch();
 
+  
   return (
     <CreatorLayout>
       <Switch>
@@ -80,6 +82,11 @@ function CreatorRoutes() {
         <Route exact path={`${path}/add-video`}>
           <AddVideo />
         </Route>
+        <Route exact path={`${path}/income`}>
+          <Wallet />
+        </Route>
+
+
       </Switch>
     </CreatorLayout>
   );

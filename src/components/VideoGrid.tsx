@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-
+import relativeTime from 'dayjs/plugin/relativeTime';
 import Card from "@mui/material/Card";
+import Paper from "@mui/material/Paper";
+
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Avatar from "@mui/material/Avatar";
-
+import dayjs from "dayjs"
+import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Skeleton from "@mui/material/Skeleton";
@@ -17,8 +20,9 @@ import { Channel } from "../models/User";
 import { UserChannel } from "../constants";
 import ApiSignleton from "../api/api";
 import ApiLoader from './ApiLoader'
+import Typography from "@mui/material/Typography";
 // import Video from '../models/Video'; 
-
+dayjs.extend(relativeTime)
 type VideoGridProps = {
   videoPlaceholderCount?: number;
   loggedIn?: boolean;
@@ -103,10 +107,10 @@ setDone(videos.length > 0)
                         )
                       }
                       title={channel.name}
-                      subheader={"5 hours ago"}
+                      subheader={dayjs(item.createdAt).fromNow()}
                     />
                     <a
-                      style={{ textDecoration: "none" }}
+                      style={{ textDecoration: "none", minHeight: '140px', display: 'block', width: '100%'  }}
                       href={`${prefix}/watch/${item.id}`}
                     >
                       <CardMedia
@@ -114,7 +118,8 @@ setDone(videos.length > 0)
 
                         image={item.thumbnail}
                         alt={item.thumbnail}
-                        sx={{ fontSize: "12px" }}
+                        sx={{ fontSize: "12px", width: '100%' }}
+                        
 
                       />
                     </a>
@@ -130,6 +135,8 @@ setDone(videos.length > 0)
                           length: 60,
                         }}
                       />
+
+                      <Typography fontSize="0.8em">{item.viewCount} View(s)</Typography>
                     </CardContent>
                   </Card>
                 </Centered>
@@ -139,6 +146,29 @@ setDone(videos.length > 0)
         </>
       );
     }
+
+    if(videos.length === 0) {
+      return (<Box>
+
+<Centered sx={{ height: '70vh', justifyContent: 'center' , alignItems: 'center'}}>
+
+<Paper style={{ padding: '3em', minWidth: '300px' }}>
+    <div style={{ textAlign: 'center' }}>
+        <img
+            src="/images/upload.png"
+            alt="done"
+            style={{ maxWidth: 200, marginBottom: 10 }}
+        />
+    </div>
+    <Typography align="center" color="success.main" sx={{ mt: 2, mb: 2 }}>No Videos found</Typography>
+  
+</Paper>
+
+
+</Centered>
+      </Box>)
+    }
+
     return (
       <>
         {items.map((item, index) => {
@@ -200,7 +230,9 @@ setDone(videos.length > 0)
     }} onLoad={(v) => {
       console.log(videos)
       console.log(v);
-      setVideos(v)}} />
+      setVideos(v)
+      setDone(true)
+      }} />
   </React.Fragment>);
 };
 

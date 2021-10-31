@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import querystring from 'querystring'
-import Centered from "../components/Centered";
-import Spacer from "../components/Spacer";
+import Centered from "../../components/Centered";
+import Spacer from "../../components/Spacer";
 import CloseIcon from "@mui/icons-material/Close";
 
 import TextField from "@mui/material/TextField";
@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Link, useLocation } from "react-router-dom";
-import ApiSignleton from "../api/api";
+import ApiSignleton from "../../api/adminApi";
  
 
 
@@ -54,10 +54,10 @@ const Login = ( ) => {
   } = useForm({ resolver: yupResolver(schema) });
 
   const handleOpen = (message: string) => {
-    setErrorMessage(message);
-    setErrorPresent(true)
-    setLoading(false)
-      }
+setErrorMessage(message);
+setErrorPresent(true)
+setLoading(false)
+  }
 
   const onSubmit = (data: any) => {
     // data.emailAddress = "";

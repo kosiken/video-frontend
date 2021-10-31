@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import VideoGrid from "../../components/VideoGrid";
-import Container from "../../components/Container";
+import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from '@mui/material/Button'
 import { Link } from "react-router-dom";
@@ -120,9 +120,9 @@ const Dashboard = () => {
       <Box style={{ maxHeight: 'calc(100vh )', overflow: 'hidden', marginTop: '64px' }} sx={{ position: "relative", display: { sm: "block", md: "flex" } }}>
         <Box style={{ overflowY: 'scroll', height: '100vh' }} flex={1}>
 
-          <Container>
+          <Container maxWidth="md">
 
-            <VideoGrid videoPlaceholderCount={24} prefix="/main" />
+            <VideoGrid videoPlaceholderCount={24} lg={4} md={4} prefix="/main" />
           </Container>
         </Box>
         <Sidebar />

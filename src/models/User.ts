@@ -18,12 +18,24 @@ export interface Subscription {
     channel: Channel;
 }
 
+export interface WithdrawalRequest {
+    id: string;
+    amount: number;
+    status: "pending" | "fulfilled"  | "denied",  createdAt:number;
+    userAssociated: User;
+}
+
+export interface Wallet {
+    income: number;
+    owner: User;
+}
 
 export default interface User {
 
     
     id: string;
     email: string;
+    emailAddress?: string;
     username: string;
     birthdate: Date | string;
     country: string;

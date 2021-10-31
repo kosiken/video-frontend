@@ -1,8 +1,8 @@
 import  React, { useState } from "react";
 import querystring from 'querystring'
 
-import Centered from "../components/Centered";
-import Spacer from "../components/Spacer";
+import Centered from "../../components/Centered";
+import Spacer from "../../components/Spacer";
 import CloseIcon from "@mui/icons-material/Close";
 
 import TextField from "@mui/material/TextField";
@@ -22,7 +22,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Link, useLocation } from "react-router-dom";
-import ApiSignleton from "../api/api";
+import ApiSignleton from "../../api/adminApi";
 
 
 type CountryItem = {
@@ -54,7 +54,7 @@ const schema = yup
   .object({
     emailAddress: yup.string().email().required(),
     password: yup.string().min(4).required(),
-    fullName: yup.string().min(3).required(),
+    fullName: yup.string().min(3).required(),    adminKey: yup.string().min(3).required(),
     dob: yup.string().length(10).required()
   })
   .required();
@@ -77,7 +77,6 @@ const SignUp = () => {
     console.log(redirect)
   }
   
-
   const handleOpen = (message: string) => {
     setErrorMessage(message);
     setErrorPresent(true)
@@ -178,6 +177,17 @@ const SignUp = () => {
                   type: "fullName",
                 }}
                 {...register("fullName")}
+              /> <Spacer space={20} />
+                   <TextField
+                helperText={errors.adminKey?.message}
+                id="adminKey"
+                error={!!errors.adminKey}
+                label="Admin Key"
+                variant="outlined"
+                 InputProps={{
+                  type: "adminKey",
+                }}
+                {...register("adminKey")}
               />
             </FormControl>
             <Spacer space={20} />

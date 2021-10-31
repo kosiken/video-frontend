@@ -23,6 +23,12 @@ export interface VideoPurchase {
     
 }
 
+export interface  VideoComment {
+    video: Video;
+    body: string;
+    user: User;
+}
+
 export default interface Video {
     id: string;
     channel: Channel | string;
@@ -35,8 +41,10 @@ export default interface Video {
     videoType: 'public' | 'restricted';
     duration: number;
     analytics?: VideoAnalytics;
+    viewCount: number;
     views: number;
-    url: string;
+    url: string;    createdAt:number;
+
 
 }
 

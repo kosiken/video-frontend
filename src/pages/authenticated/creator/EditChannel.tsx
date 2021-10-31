@@ -151,7 +151,7 @@ const EditChannel = () => {
                                     id="short_description"
                                     {...register('shortDescription')}
                                     
-                                    label="Channel Name"
+                                    label="Channel Description"
                                     variant="outlined"
                                     multiline
                                     rows={3}
