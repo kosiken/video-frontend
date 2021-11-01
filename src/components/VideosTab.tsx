@@ -426,7 +426,7 @@ console.log(err)
 
                                             </TableCell>
                                             <TableCell style={{ width: 160 }} align="left">
-                                                <AppLink to={(row.videoType === "public"? "/main/watch/" : "/main/restricted/isOwner") + row.id} doNotUseButton>
+                                                <AppLink to={("/main/watch/" ) + row.id} doNotUseButton>
                                                     <IconButton >
                                                         <PreviewIcon htmlColor={theme.palette.primary.main} />
                                                     </IconButton>

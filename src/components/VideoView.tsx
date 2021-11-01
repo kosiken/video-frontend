@@ -26,10 +26,11 @@ import UserApiSignleton from "../api/userApi";
 
 type VideoViewProps = {
   url: string;
-  video: Video
+  video: Video;
+  accessToken?: string
 };
 
-const VideoView: React.FC<VideoViewProps> = ({ url, video }) => {
+const VideoView: React.FC<VideoViewProps> = ({ url, video , accessToken}) => {
   // const url = "/video.mp4"//https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4
 
   const videoRef: any = React.useRef();
@@ -64,7 +65,9 @@ const VideoView: React.FC<VideoViewProps> = ({ url, video }) => {
     const updateView = async () => {
       try {
         const Api = UserApiSignleton()
-        let b = await Api.viewVideo(video.id, playedSeconds * 1000);
+        let b;
+        if(!accessToken) b = await Api.viewVideo(video.id, playedSeconds * 1000);
+        else b = await Api.viewVideoRestricted(video.id, accessToken, duration);
         console.log(b);
       } catch (error: any) {
         console.log(error)
@@ -80,7 +83,7 @@ const VideoView: React.FC<VideoViewProps> = ({ url, video }) => {
         updateView()
       }
     }
-  }, [playedSeconds, video])
+  }, [playedSeconds, video, accessToken])
 
   const getMd = () => {
     if (fullScreen) {

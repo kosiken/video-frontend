@@ -9,7 +9,7 @@ import Button from '@mui/material/Button'
 import { Link } from "react-router-dom";
 import { Channel } from "../../models/User";
 import LoadingPageIndicator from "../../components/LoadingPageIndicator";
-import UserApiSignleton from "../../api/userApi";
+import ApiSignleton from "../../api/api";
 import ErrorPageIndicator from "../../components/ErrorPageIndicator";
 import AppLink from "../../components/AppLink";
 
@@ -23,9 +23,9 @@ const Sidebar = () => {
 
   function retry() {
     if (creators.length > 0) return;
-    const userApi = UserApiSignleton();
-    userApi.getFollowing().then(c => {
-      setCreators(c.map(s => s.channel));
+    const userApi = ApiSignleton();
+    userApi.getChannels().then(c => {
+      setCreators(c);
       setLoading(false)
     }).catch((error) => {
       console.log(error);
@@ -42,9 +42,9 @@ const Sidebar = () => {
     })
   }
   useEffect(() => {
-    const userApi = UserApiSignleton();
-    userApi.getFollowing().then(c => {
-      setCreators(c.map(s => s.channel));
+    const userApi = ApiSignleton();
+    userApi.getChannels().then(c => {
+      setCreators(c);
       setLoading(false)
     }).catch((error) => {
       console.log(error);
@@ -59,8 +59,7 @@ const Sidebar = () => {
         setLoading(false)
       }
     })
-
-
+  
   },[])
 
   
@@ -85,18 +84,13 @@ const Sidebar = () => {
 
   return (
     <Box
-      sx={{
-        display: { md: "block", sm: "none" },
-        width: { md: "250px", sm: "90vw" },
-
-      }}
+  
       style={{ padding: '1em 0 0' }}
     >
-      <Typography fontWeight="bold" component="span" style={{ marginLeft: 15 }}>Following ({creators.length})</Typography> <AppLink to="/main/all-creators"> All Creators</AppLink>
       <Paper elevation={0} style={{ height: "95%", overflowY: 'scroll' }}>
         {sliceCreators().map((creator, index) => {
           return (
-            <Link to={"#/creator/" + index} key={"creator" + index} style={{ display: 'block', textDecoration: 'none', color: 'inherit', marginBottom: 10 }}>
+            <Link to={"/main/creator/" + creator.id} key={"creator" + index} style={{ display: 'block', textDecoration: 'none', color: 'inherit', marginBottom: 10 }}>
               <Button style={{ textTransform: 'none', display: 'flex', width: '100%', justifyContent: 'flex-start', color: 'inherit' }}>
                 <Avatar
                   alt={creator.name}
@@ -115,7 +109,7 @@ const Sidebar = () => {
 
 }
 
-const Dashboard = () => {
+const AllChannels = () => {
   // 
   return (
     <Box>
@@ -123,15 +117,14 @@ const Dashboard = () => {
         <Box style={{ overflowY: 'scroll', height: '100vh' }} flex={1}>
 
           <Container maxWidth="md">
-
-            <VideoGrid videoPlaceholderCount={24} lg={4} md={4} prefix="/main" />
+          <Sidebar />
           </Container>
         </Box>
-        <Sidebar />
+    
 
       </Box>
     </Box>
   );
 };
 
-export default Dashboard;
+export default AllChannels;

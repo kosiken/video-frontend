@@ -22,6 +22,7 @@ export interface VideoPurchase {
 }
 
 export interface VideoComment {
+  id: string;
   video: Video;
   body: string;
   user: User;

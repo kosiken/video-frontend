@@ -1,4 +1,4 @@
-import User from "../models/User";
+import User, { Channel } from "../models/User";
 
 import axios, { AxiosInstance } from "axios";
 import Video from "../models/Video";
@@ -25,6 +25,9 @@ interface IErederApi {
   logout():Promise<void>;
   addTicket(title: string, body: string): Promise<Ticket>;
   getVideo(id: string): Promise<Video>;
+  getChannels(): Promise<Channel[]>;
+  getChannel(id: string): Promise<Channel>;
+  getChannelVideos(id: string): Promise<Video[]>;
   
   //</Video>
   //</void>
@@ -47,8 +50,42 @@ class ErederApi implements IErederApi {
       headers: { "Content-Type": "application/json" },
     });
   }
+
+  async getChannelVideos(id: string): Promise<Video[]>{
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+    let response = await this._api.get<Video[]>('/all-channels-videos/' + id  ,   {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+    return response.data;
+  }
+  async getChannel(id: string): Promise<Channel> {
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+    let response = await this._api.get<Channel>('/all-channels/' + id  ,   {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+    return response.data;
+  }
+
+  async getChannels(): Promise<Channel[]> {
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+    let response = await this._api.get<Channel[]>('/all-channels' ,   {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+    return response.data;
+  }
   async getVideo(id: string): Promise<Video> {
-      let response = await this._api.get<Video>('/video/' +id );
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+      let response = await this._api.get<Video>('/api/video/' +id ,   {
+        headers: {
+          authorization: `Bearer ${config.token}`,
+        },
+      });
       return response.data;
   }
   async addTicket(title: string, body: string): Promise<Ticket> {

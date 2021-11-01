@@ -153,7 +153,7 @@ const TabTwo: React.FC<KosyTabProps> = ({ showing }) => {
         return (
           <Box display="flex" sx={{mb: 1}} key={"channel-" + index}>
             <AppLink
-              to={"/main/channel/" + creator.id}
+              to={"/main/creator/" + creator.id}
 
               style={{ marginBottom: 10, flex: 1, display: "flex", }}
               sx={{

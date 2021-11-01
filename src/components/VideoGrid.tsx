@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Card from "@mui/material/Card";
 import Paper from "@mui/material/Paper";
-
+import Chip from "@mui/material/Chip";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -32,6 +32,7 @@ type VideoGridProps = {
   lg?: GridSize;
   md?: GridSize;
   prefix?: string;
+  channelId?: string;
 };
 
 const VideoGrid: React.FC<VideoGridProps> = ({
@@ -41,7 +42,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
   sm = 6,
   md = 4,
   lg = 3,
-  prefix = "/main"
+  prefix = "/main", channelId
 }) => {
 
   const [videos, setVideos] = useState<Video[]>([]);
@@ -56,7 +57,9 @@ const VideoGrid: React.FC<VideoGridProps> = ({
 
     }
     const Api = ApiSignleton();
-    let v = await Api.allVideos()
+    let v;
+    if(channelId)v = await Api.getChannelVideos(channelId)
+    else v = await Api.allVideos()
     setVideos(v);
     return v;
     // setDone(true)
@@ -68,12 +71,12 @@ const VideoGrid: React.FC<VideoGridProps> = ({
   }
 
   useEffect(() => {
-console.log(videos)
-setDone(videos.length > 0)
+    console.log(videos)
+    setDone(videos.length > 0)
   }, [videos])
 
   const getGrid = () => {
-    if (done) {
+    if (done && videos.length > 0) {
       return (
         <>
           {videos.map((item, index) => {
@@ -111,9 +114,9 @@ setDone(videos.length > 0)
                       subheader={dayjs(item.createdAt).fromNow()}
                     />
                     <AppLink
-                      sx={{ textDecoration: "none", minHeight: '140px', display: 'block', width: '100%'  }}
-                     to={item.videoType === 'public' ? `${prefix}/watch/${item.id}`  : `${prefix}/purchase/${item.id}`}
-                     doNotUseButton
+                      sx={{ textDecoration: "none", minHeight: '140px', display: 'block', width: '100%' }}
+                      to={item.videoType === 'public' ? `${prefix}/watch/${item.id}` : `${prefix}/purchase/${item.id}`}
+                      doNotUseButton
                     >
                       <CardMedia
                         component="img"
@@ -121,7 +124,7 @@ setDone(videos.length > 0)
                         image={item.thumbnail}
                         alt={item.thumbnail}
                         sx={{ fontSize: "12px", width: '100%' }}
-                        
+
 
                       />
                     </AppLink>
@@ -138,7 +141,10 @@ setDone(videos.length > 0)
                         }}
                       />
 
-                      <Typography fontSize="0.8em">{item.viewCount} View(s)</Typography>
+                      <Typography fontSize="0.8em" sx={{ mb: 2 }}>{item.viewCount} View(s)</Typography>
+                      <Chip size="small"  label={item.videoType} variant={(item.videoType === 'public' ? 'outlined' : 'filled')} />
+                     {item.price > 0 && <Chip label={"N" + item.price }size="small" variant="outlined"  />}
+
                     </CardContent>
                   </Card>
                 </Centered>
@@ -149,27 +155,7 @@ setDone(videos.length > 0)
       );
     }
 
-    if(videos.length === 0) {
-      return (<Box>
-
-<Centered sx={{ height: '70vh', justifyContent: 'center' , alignItems: 'center'}}>
-
-<Paper style={{ padding: '3em', minWidth: '300px' }}>
-    <div style={{ textAlign: 'center' }}>
-        <img
-            src="/images/upload.png"
-            alt="done"
-            style={{ maxWidth: 200, marginBottom: 10 }}
-        />
-    </div>
-    <Typography align="center" color="success.main" sx={{ mt: 2, mb: 2 }}>No Videos found</Typography>
-  
-</Paper>
-
-
-</Centered>
-      </Box>)
-    }
+    if (videos.length > 0) {
 
     return (
       <>
@@ -221,6 +207,27 @@ setDone(videos.length > 0)
         })}
       </>
     );
+    
+    }
+    return (<Box>
+
+      <Centered sx={{ height: '70vh', justifyContent: 'center', alignItems: 'center' }}>
+
+        <Paper style={{ padding: '3em', minWidth: '300px' }}>
+          <div style={{ textAlign: 'center' }}>
+            <img
+              src="/images/upload.png"
+              alt="done"
+              style={{ maxWidth: 200, marginBottom: 10 }}
+            />
+          </div>
+          <Typography align="center" color="success.main" sx={{ mt: 2, mb: 2 }}>No Videos found</Typography>
+
+        </Paper>
+
+
+      </Centered>
+    </Box>)
   };
 
   return (<React.Fragment><Grid container>{getGrid()}</Grid>
@@ -234,7 +241,7 @@ setDone(videos.length > 0)
       console.log(v);
       setVideos(v)
       setDone(true)
-      }} />
+    }} />
   </React.Fragment>);
 };
 

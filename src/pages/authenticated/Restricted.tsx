@@ -13,10 +13,10 @@ import { useParams } from "react-router";
 import Video from '../../models/Video';
 import UserApiSignleton from '../../api/userApi';
 import { Channel } from '../../models/User';
+import CommentComponent from '../../components/CommentComponent';
 dayjs.extend(relativeTime)
 const ViewRestricted = () => {
-  const url = "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
-  const prefix = "http://localhost:1337"
+  const prefix = ""
   const [video, setVideo] = useState<Video | undefined>();
 
   const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ const ViewRestricted = () => {
         <Box style={{ paddingTop: "4em" }}>
           <Grid container spacing={2}>
             <Grid item md={8} sm={12}>
-              <VideoView url={prefix + video.url} video={video} />
+              <VideoView url={prefix + video.url} video={video} accessToken={accessCode} />
             </Grid>
             <Grid item md={4} sm={12}>
               <Box padding={2}>
@@ -56,9 +56,11 @@ const ViewRestricted = () => {
                 <Typography variant="body2">
                   {video.description}
                 </Typography>
-                <Typography variant="caption">
+                <Typography sx={{mt: 1, mb: 2}} variant="caption">
                   {dayjs(video.createdAt).fromNow()}
                 </Typography>
+
+              <CommentComponent videoId={video.id} />
               </Box>
             </Grid>
           </Grid>

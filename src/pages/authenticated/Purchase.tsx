@@ -36,7 +36,7 @@ const Purchase = () => {
             if(error.response.data.problems)    alert(error.response.data.problems);
             }
         }
-        
+
         setLoading2(false)
     }
 
@@ -46,7 +46,7 @@ const Purchase = () => {
         setLoading(true);
         try{
         const p = await Api.checkForAccess(id);
-        window.location.pathname = '/main/restricted/' + p.id;
+        window.location.pathname = '/main/restricted/' + p.accessCode;
       
       }
       catch(err) {

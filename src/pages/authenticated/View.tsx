@@ -13,11 +13,11 @@ import {  useParams } from "react-router";
 import Video from '../../models/Video';
 import ApiSignleton from '../../api/api';
 import { Channel } from '../../models/User';
+import CommentComponent from '../../components/CommentComponent';
 dayjs.extend(relativeTime)
 
 const View = () => {
-    const url = "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
-    const prefix = "http://localhost:1337"
+    const prefix = ""
 const [video, setVideo] = useState<Video|undefined>();
 
 const [loading, setLoading] = useState(true);
@@ -57,9 +57,11 @@ setLoading(false)
                 <Typography variant="body2">
                 {video.description}
                 </Typography>
-                <Typography variant="caption">
-                {dayjs(video.createdAt).fromNow()}
+                <Typography sx={{mt: 1, mb: 2}} variant="caption">
+                  {dayjs(video.createdAt).fromNow()}
                 </Typography>
+
+              <CommentComponent videoId={video.id} />
               </Box>
             </Grid>
           </Grid>
