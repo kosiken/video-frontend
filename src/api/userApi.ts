@@ -44,7 +44,7 @@ class UserApi implements IUserApi {
 
   constructor() {
     this._api = axios.create({
-      baseURL: "http://localhost:1337/api/user",
+      baseURL: "/api/user",
       headers: { "Content-Type": "application/json" },
     });
   }

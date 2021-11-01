@@ -31,7 +31,7 @@ class CreatorApi implements ICreatorApi {
   _api: AxiosInstance;
   constructor() {
     this._api = axios.create({
-      baseURL: "http://localhost:1337/admin/api/creator",
+      baseURL: "/api/creator",
       headers: { "Content-Type": "application/json" },
     });
   }

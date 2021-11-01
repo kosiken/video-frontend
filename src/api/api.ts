@@ -46,7 +46,7 @@ class ErederApi implements IErederApi {
   _api: AxiosInstance;
   constructor() {
     this._api = axios.create({
-      baseURL: "http://localhost:1337",
+      baseURL: "",
       headers: { "Content-Type": "application/json" },
     });
   }
