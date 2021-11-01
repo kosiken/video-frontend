@@ -74,7 +74,7 @@ const BecomeACreator = () => {
 
 
   return (
-    <Box style={{ marginTop: "4em", minHeight: 'calc(100vh - 64px)' }}>
+    <Box style={{ paddingTop: "4em", minHeight: 'calc(100vh - 64px)' }}>
 
       {user?.isCreator && (<Redirect to="/creator/dashboard" />)}
 

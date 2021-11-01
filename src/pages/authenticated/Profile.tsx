@@ -48,7 +48,7 @@ const Profile = () => {
 
 
   return (
-    <Box style={{ marginTop: "4em", position: "relative" }}>
+    <Box style={{ paddingTop: "4em", position: "relative" }}>
       <Helmet>
 
         <title>{user?.fullName + " / " + TabNames[value]}</title>

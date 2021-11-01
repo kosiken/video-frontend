@@ -336,7 +336,7 @@ const CreatorDashboard = () => {
       {dialog}
     </Container>
   );
-  return (<Container style={{ marginTop: "64px", minHeight: '80vh' }}
+  return (<Container style={{ paddingTop: "64px", minHeight: '80vh' }}
     sx={{ marginLeft: { sm: 0, md: "200px" }, maxWidth: { md: 'calc(100vw - 200px)', sm: 'auto' }, }}
   >
     <Centered sx={{ height: '100%' }}>

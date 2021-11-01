@@ -21,7 +21,8 @@ import { UserChannel } from "../constants";
 import ApiSignleton from "../api/api";
 import ApiLoader from './ApiLoader'
 import Typography from "@mui/material/Typography";
-// import Video from '../models/Video'; 
+import AppLink from "./AppLink";
+
 dayjs.extend(relativeTime)
 type VideoGridProps = {
   videoPlaceholderCount?: number;
@@ -40,7 +41,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
   sm = 6,
   md = 4,
   lg = 3,
-  prefix = "/open"
+  prefix = "/main"
 }) => {
 
   const [videos, setVideos] = useState<Video[]>([]);
@@ -109,9 +110,10 @@ setDone(videos.length > 0)
                       title={channel.name}
                       subheader={dayjs(item.createdAt).fromNow()}
                     />
-                    <a
-                      style={{ textDecoration: "none", minHeight: '140px', display: 'block', width: '100%'  }}
-                      href={`${prefix}/watch/${item.id}`}
+                    <AppLink
+                      sx={{ textDecoration: "none", minHeight: '140px', display: 'block', width: '100%'  }}
+                     to={item.videoType === 'public' ? `${prefix}/watch/${item.id}`  : `${prefix}/purchase/${item.id}`}
+                     doNotUseButton
                     >
                       <CardMedia
                         component="img"
@@ -122,7 +124,7 @@ setDone(videos.length > 0)
                         
 
                       />
-                    </a>
+                    </AppLink>
 
                     <CardContent>
                       <ControlledText

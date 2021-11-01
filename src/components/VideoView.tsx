@@ -21,12 +21,15 @@ import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import useWindowSize, { Size } from "../hooks/useWindowSize";
 import { toHHMMSS } from "../utils/functions";
+import Video from "../models/Video";
+import UserApiSignleton from "../api/userApi";
 
 type VideoViewProps = {
   url: string;
+  video: Video
 };
 
-const VideoView: React.FC<VideoViewProps> = ({ url }) => {
+const VideoView: React.FC<VideoViewProps> = ({ url, video }) => {
   // const url = "/video.mp4"//https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4
 
   const videoRef: any = React.useRef();
@@ -45,7 +48,7 @@ const VideoView: React.FC<VideoViewProps> = ({ url }) => {
   const [fullScreen, setFullScreen] = useState(false);
   const [open, setOpen] = React.useState(true);
 
- 
+
   const handleClose = (
     event: React.SyntheticEvent | React.MouseEvent,
     reason?: string,
@@ -56,6 +59,28 @@ const VideoView: React.FC<VideoViewProps> = ({ url }) => {
 
     setOpen(false);
   };
+
+  useEffect(() => {
+    const updateView = async () => {
+      try {
+        const Api = UserApiSignleton()
+        let b = await Api.viewVideo(video.id, playedSeconds * 1000);
+        console.log(b);
+      } catch (error: any) {
+        console.log(error)
+      }
+    }
+    if (playedSeconds > 0) {
+      if(Math.round(playedSeconds) === 1) {
+        updateView();
+        return
+      }
+      let m = Math.round(playedSeconds);
+      if ((m % 60) === 0 && m > 0) {
+        updateView()
+      }
+    }
+  }, [playedSeconds, video])
 
   const getMd = () => {
     if (fullScreen) {
@@ -88,17 +113,27 @@ const VideoView: React.FC<VideoViewProps> = ({ url }) => {
     if (!!ref.current && fullScreen) {
       ref.current.requestFullscreen();
     } else if (!fullScreen) {
-        if (document.fullscreenElement)    document.exitFullscreen().catch(console.log);
+      if (document.fullscreenElement) document.exitFullscreen().catch(console.log);
     }
   }, [fullScreen]);
+
+
+
   const toggleVideoLike = () => {
+    const Api = UserApiSignleton();
+
+    Api.reactToVideo(!liked, video)
+    .then(console.log)
+    .catch(console.log);
+
+    
     setLiked(!liked);
   };
 
   useEffect(() => {
     setValue(liked);
 
-    return () => {};
+    return () => { };
   }, [liked, setValue]);
 
   useEffect(() => {
@@ -106,7 +141,7 @@ const VideoView: React.FC<VideoViewProps> = ({ url }) => {
       console.log("sending request");
     };
     sendApiRequest();
-    return () => {};
+    return () => { };
   }, [value]);
 
   useEffect(() => {
@@ -124,45 +159,45 @@ const VideoView: React.FC<VideoViewProps> = ({ url }) => {
       }
     };
   }, [show]);
- 
+
   useEffect(() => {
     setDurationString(toHHMMSS(duration));
-    return () => {};
+    return () => { };
   }, [duration]);
 
   useEffect(() => {
     setPlayedSecondString(toHHMMSS(playedSeconds));
-    return () => {};
+    return () => { };
   }, [playedSeconds]);
   const getWidth = () => {
     return fullScreen
       ? window.innerWidth + "px"
       : size.width
-      ? size.width < 640
-        ? size.width + "px"
-        : "640px"
-      : "640px";
+        ? size.width < 640
+          ? size.width + "px"
+          : "640px"
+        : "640px";
   };
   const action = (
-    
-   
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleClose}
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
-  
+
+
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={handleClose}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+
   );
   return (
     <Container sx={{ paddingTop: "1em", maxWidth: "640px" }}>
       {" "}
       <div
         onClick={() => {
-            setShow(true);
-            setPlaying(!playing)
+          setShow(true);
+          setPlaying(!playing)
         }
         }
         style={{ position: "relative" }}
@@ -174,8 +209,8 @@ const VideoView: React.FC<VideoViewProps> = ({ url }) => {
             setProgress(state.played);
             setPlayedSeconds(state.playedSeconds);
           }}
-          height={fullScreen ? "100%": 'auto'}
-     
+          height={fullScreen ? "100%" : 'auto'}
+
           width={getWidth()}
           onDuration={setDuration}
           playing={playing}
@@ -267,36 +302,37 @@ const VideoView: React.FC<VideoViewProps> = ({ url }) => {
           color="primary"
           alignItems={"center"}
         >
-          {" "}
+
           <VisibilityIcon color="primary" />{" "}
           <Typography color="primary" variant="subtitle1" component="span">
-            {" "}
-            1203 views
+            {video.viewCount} Views
+
           </Typography>
         </Box>
         <Divider orientation="vertical" flexItem />
         <Box display="flex" padding={"0 0 0 2em"} alignItems={"center"}>
-          {" "}
+
           <IconButton
             onClick={toggleVideoLike}
             color={liked ? "error" : "default"}
           >
-            {" "}
+
             <FavoriteIcon color="inherit" />{" "}
           </IconButton>{" "}
           <Typography color="secondary" variant="subtitle1" component="span">
-            {" "}
-            1203 views
+            {liked ? video.likeCount + 1 : video.likeCount } likes
+
+
           </Typography>
         </Box>
       </Box>
       <Snackbar
-  open={open}
-  autoHideDuration={6000}
-  onClose={handleClose}
-  message="Tap Video to play or pause"
-  action={action}
-/>
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Tap Video to play or pause"
+        action={action}
+      />
 
     </Container>
   );

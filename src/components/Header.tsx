@@ -169,10 +169,13 @@ export default function Header() {
       onClose={handleSettingsMenuClose}
     >
 
-      <MenuItem onClick={() => {
-        setDark(!dark);
-        //  handleSettingsMenuClose();
-      }}>
+      <MenuItem
+        onClick={() => {
+          dispatch({ type: "change-theme", value: !dark });
+          setDark(!dark);
+          //  handleSettingsMenuClose();
+        }}
+      >
         <Switch checked={dark} size="small" /> <span> Dark Mode </span>
       </MenuItem>
 
@@ -209,7 +212,7 @@ export default function Header() {
         </Link>
       )}
 
-      <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
+    
       {/* TODO  handle logout */}
       <MenuItem onClick={handleClickOpen}>Logout</MenuItem>
     </Menu>
@@ -243,18 +246,7 @@ export default function Header() {
           <p>Add Video</p>
         </MenuItem>
       </AppLink>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
+     
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
@@ -320,16 +312,6 @@ export default function Header() {
               </Tooltip>
             </AppLink>
 
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              title="lion"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
             <IconButton
               size="large"
               edge="end"

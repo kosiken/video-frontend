@@ -1,9 +1,9 @@
-import User, { Subscription } from "../models/User";
+import User, { Channel, Subscription } from "../models/User";
 import axios, { AxiosInstance } from "axios";
 // import Video from "../models/Video";
 import { sanitizedChannel } from "../utils/functions";
 import ViewHistory from "../models/ViewHistory";
-import { VideoPurchase } from "../models/Video";
+import Video, { VideoPurchase } from "../models/Video";
 
 export interface IBillingDetails  {
   billingCardBrand: string;
@@ -25,6 +25,11 @@ interface IUserApi {
   viewHistory(): Promise<ViewHistory[]>;
   purchases(): Promise<VideoPurchase[]>;
   addCard(data: IBillingDetails): Promise<IBillingDetails>;
+  viewVideo(videoId: string, duration: number): Promise<any>;
+  getRestrictedVideo(accessCode: string, id?: string): Promise<Video>;//</Video>
+  reactToVideo(like: boolean, video: Video): Promise<{like: boolean}>;
+  purchase(videoId: string): Promise<VideoPurchase>;
+  checkForAccess(videoId: string): Promise<VideoPurchase>;
 }
 
 class UserApi implements IUserApi {
@@ -35,6 +40,75 @@ class UserApi implements IUserApi {
       baseURL: "http://localhost:1337/api/user",
       headers: { "Content-Type": "application/json" },
     });
+  }
+ async checkForAccess(videoId: string): Promise<VideoPurchase> {
+
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+  
+
+    const response = await this._api.get<VideoPurchase>(`/check-access/${videoId}`, {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+    return response.data;
+  
+  }
+ async purchase(videoId: string): Promise<VideoPurchase> {
+
+  let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+  
+
+  const response = await this._api.get<VideoPurchase>(`/purchase/${videoId}`, {
+    headers: {
+      authorization: `Bearer ${config.token}`,
+    },
+  });
+
+  return response.data;
+  }
+  async getRestrictedVideo(accessCode: string, id?: string): Promise<Video> {
+  
+    let url = id ? '?videoId=' + id : ''
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+    
+
+    const response = await this._api.get<Video>(`/restricted/${accessCode}` + url, {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+
+    return response.data;
+  }
+ async reactToVideo(like: boolean, video: Video): Promise<{ like: boolean; }> {
+    let url = like ? '/like' :'/un-like';
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+    let channelId= typeof video.channel === 'string' ? video.channel : (video.channel as Channel).id;
+
+    const response = await this._api.post<{
+      like: boolean;
+    }>(url,{
+      videoLiked: video.id,
+      channel: channelId
+    }, {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+
+    return response.data;
+  }
+  async viewVideo(videoId: string, duration: number): Promise<any> {
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+
+    const response = await this._api.get(`/view/${videoId}?duration=${duration > 1000 ? duration : 1000 }`, {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    });
+
+    return response.data;
   }
   async addCard(data: IBillingDetails): Promise<IBillingDetails> {
     let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };

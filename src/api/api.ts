@@ -2,6 +2,7 @@ import User from "../models/User";
 
 import axios, { AxiosInstance } from "axios";
 import Video from "../models/Video";
+import { Ticket } from "../models/Admin";
 
 export type SignInOptions = {
   emailAddress: string;
@@ -22,6 +23,10 @@ interface IErederApi {
   becomeCreator(): Promise<{ isCreator: boolean }>;
   allVideos():Promise<Video[]>;
   logout():Promise<void>;
+  addTicket(title: string, body: string): Promise<Ticket>;
+  getVideo(id: string): Promise<Video>;
+  
+  //</Video>
   //</void>
 }
 
@@ -41,6 +46,24 @@ class ErederApi implements IErederApi {
       baseURL: "http://localhost:1337",
       headers: { "Content-Type": "application/json" },
     });
+  }
+  async getVideo(id: string): Promise<Video> {
+      let response = await this._api.get<Video>('/video/' +id );
+      return response.data;
+  }
+  async addTicket(title: string, body: string): Promise<Ticket> {
+    let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };
+
+   const response =  await this._api.post<Ticket>(
+    "/api/user/ticket",{body, title},
+    {
+      headers: {
+        authorization: `Bearer ${config.token}`,
+      },
+    }
+  );
+  return response.data;
+
   }
  async logout(): Promise<void> {
   let config = { token: window.localStorage.getItem("jwt") || "NO_TOKEN" };

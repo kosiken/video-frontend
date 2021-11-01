@@ -35,6 +35,7 @@ import ApiLoader from './components/ApiLoader';
 import Analytics from './pages/authenticated/creator/Analytics';
 import AddVideo from './pages/authenticated/creator/AddVideo';
 import Wallet from './pages/authenticated/creator/Wallet';
+import Purchase from './pages/authenticated/Purchase';
  
 let theme = createTheme({
   palette: {
@@ -103,7 +104,9 @@ function UserRoutes() {
         <Route path={`${path}/my-dashboard`}>
           <Profile />
         </Route>
-
+        <Route exact path={`${path}/purchase/:id`}>
+          <Purchase />
+        </Route>
         <Route exact path={`${path}/watch/:id`}>
           <View />
         </Route>

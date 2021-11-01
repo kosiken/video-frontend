@@ -90,7 +90,7 @@ const EditChannel = () => {
 
     if (loading) {
         return (
-            <Container style={{ marginTop: "64px", minHeight: '80vh' }}
+            <Container style={{ paddingTop: "64px", minHeight: '80vh' }}
                 sx={{ marginLeft: { sm: 0, md: "200px" }, maxWidth: { md: 'calc(100vw - 200px)', sm: 'auto' }, }}
             >
                 <LoadingPageIndicator />
@@ -101,7 +101,7 @@ const EditChannel = () => {
         <Container
 
 
-            style={{ marginTop: "64px", minHeight: '80vh' }}
+            style={{ paddingTop: "64px", minHeight: '80vh' }}
             sx={{ marginLeft: { sm: 0, md: "200px" }, maxWidth: { md: 'calc(100vw - 200px)', sm: 'auto' }, }}
         >
             <Typography variant="h5" style={{ marginBottom: '20px' }}>Edit Channel</Typography>
@@ -184,7 +184,7 @@ const EditChannel = () => {
             <Spacer space={20} />
         </Container>
     );
-    return (<Container style={{ marginTop: "64px", minHeight: '80vh' }}
+    return (<Container style={{ paddingTop: "64px", minHeight: '80vh' }}
         sx={{ marginLeft: { sm: 0, md: "200px" }, maxWidth: { md: 'calc(100vw - 200px)', sm: 'auto' }, }}
     >
         <Centered sx={{ height: '100%' }}>

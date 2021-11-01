@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
-import Tooltip from '@mui/material/Tooltip';
-import AddIcon from "@mui/icons-material/Add";
+import InputAdornment from '@mui/material/InputAdornment';
 import LinearProgress from "@mui/material/LinearProgress";
 import AppBar from '@mui/material/AppBar';
 import TextField from '@mui/material/TextField';
@@ -24,7 +23,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
@@ -49,6 +48,21 @@ import AdminApiSingleton from '../../api/adminApi';
 import { AppState } from "../../store";
 import User, { WithdrawalRequest } from "../../models/User";
 import { shortenText } from "../../utils/functions";
+import { Message, Ticket } from "../../models/Admin";
+import Slide from '@mui/material/Slide';
+
+import { TransitionProps } from '@mui/material/transitions';
+import Divider  from "@mui/material/Divider";
+import { SettingsBluetoothSharp } from "@material-ui/icons";
+
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement;
+    },
+    ref: React.Ref<unknown>,
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 
 type KosyTabProps = {
@@ -124,6 +138,8 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 }
 
 
+
+
 const RequestsTab: React.FC<KosyTabProps> = ({ showing }) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -139,7 +155,7 @@ const RequestsTab: React.FC<KosyTabProps> = ({ showing }) => {
     const [retries, setRetries] = useState(0);
     const [loading2, setLoading2] = useState(false);
     const [open, setOpen] = React.useState(false);
-   
+
     const open2 = Boolean(anchorEl);
 
 
@@ -188,7 +204,7 @@ const RequestsTab: React.FC<KosyTabProps> = ({ showing }) => {
         setOpen(false);
     };
     const handleRetry = () => {
-     
+
         setRetries(retries + 1);
         setShown(false)
     }
@@ -427,6 +443,425 @@ const RequestsTab: React.FC<KosyTabProps> = ({ showing }) => {
 }
 
 
+const MessageComponent: React.FC<{ user: User, ticket: Ticket }> = ({ user, ticket }) => {
+
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [body, setBody] = useState('')
+    useEffect(() => {
+        async function runner() {
+            setLoading(true);
+            const Api = AdminApiSingleton();
+            try {
+                let m = await Api.getMessages(ticket.id);
+                setMessages(m);
+            } catch (error) {
+                alert("An error occured ")
+            }
+            setLoading(false);
+
+        }
+
+        if (ticket && user) {
+            runner();
+        }
+    }, [ticket, user])
+
+    const sendMessage = async () => {
+
+        let m: Message = {
+            id: 'lol',
+            user: 'lion',
+            body: body.slice(),
+            messageType:  "admin_to_user",
+            createdAt: 100
+        };
+        setMessages(messages.concat(m));
+        setBody('')
+        const Api =  AdminApiSingleton();
+        try {
+            await Api.messageUser(ticket.id, m.body);
+        } catch (error) {
+            alert("failed to send message")
+        }
+  
+
+    }
+
+    if (loading) return <LoadingPageIndicator />
+
+    return (<Box>
+        <div style={{ marginBottom: '3em' }}>
+            {messages.map((m, i) => {
+
+                if (m.messageType === 'admin_to_user') {
+                    return (<Box display="flex" key={'message-' + i} style={{marginBottom: '1em'}}>
+                        <Paper style={{ flex: 1 }}>
+                        <Typography style={{marginBottom: '10px'}} >
+                            {m.body}
+                        </Typography>
+                        <Divider/>
+                        </Paper>
+                   
+                        <div style={{ width: '150px' }} />
+                    </Box>)
+                }
+                else return (<Box display="flex" key={'message-' + i}  style={{marginBottom: '1em'}}>
+                    <div style={{ width: '150px' }} />
+                    <Paper style={{ flex: 1 }}>
+                        <Typography style={{marginBottom: '10px'}} >
+                            {m.body}
+                        </Typography>
+                        <Divider/>
+                        </Paper>
+
+                </Box>)
+            })}
+        </div>
+        <div style={{ position: 'fixed', bottom: '0', left: '0', width: '100vw', }}>
+            <Box display="flex" padding="10px">
+                <Box flex={1}>
+                    <TextField
+
+                        rows={3}
+                        multiline
+                        margin="dense"
+                        id="issueBody"
+                        label="Message"
+                        type="text"
+                        fullWidth
+                        value={body}
+                        onChange={(e) => {
+                            setBody(e.target.value)
+                        }}
+                        variant="standard"
+                        InputProps={{
+                            endAdornment:
+                                (<InputAdornment position="end">
+                                    <IconButton
+                                    disabled={body.length === 0}
+                                        onClick={sendMessage}
+                                    >
+                                        <SendIcon />
+                                    </IconButton>
+                                </InputAdornment>)
+
+                        }}
+                    />
+
+                </Box>
+
+            </Box>
+
+        </div>
+    </Box>)
+
+}
+
+const TicketsTab: React.FC<KosyTabProps> = ({ showing }) => {
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [user, setUser] = useState<User | undefined>()
+    const [currentTicket, setCurrentTicket] = useState<Ticket | undefined>()
+    const [shown, setShown] = useState(false);
+    const [loading, setLoading] = useState(true)
+    const [tickets, setTickets] = useState<Ticket[]>([]);
+    const [errrorMessage, setErrorMessage] = useState("");
+    const [errorPresent, setErrorPresent] = useState(false);
+    const [retries, setRetries] = useState(0);
+    const [loading2, setLoading2] = useState(false);
+    const [open, setOpen] = React.useState(false);
+
+    const [open2, setOpen2] = React.useState(false);
+
+    const [open3, setOpen3] = React.useState(false);
+
+
+    const handleClickOpen3 = () => {
+        setOpen2(false);
+        setOpen3(true)
+    };
+
+    const handleClose3 = () => {
+        setOpen3(false);
+    };
+
+    const handleClickOpen = (user: User) => {
+        setUser(user);
+        setOpen(true)
+    };
+    const handleCloseDialog2 = () => {
+        setOpen2(false);
+    };
+    const handleCloseDialog = () => {
+        setOpen(false);
+    };
+    const handleRetry = () => {
+
+        setRetries(retries + 1);
+        setShown(false)
+    }
+
+
+    const handleChangePage = (
+        event: React.MouseEvent<HTMLButtonElement> | null,
+        newPage: number,
+    ) => {
+        setPage(newPage);
+    };
+    const handleChangeRowsPerPage = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    useEffect(() => {
+        const loadFunc = async () => {
+            if (!shown && showing) {
+                const Api = AdminApiSingleton();
+
+                try {
+                    let _views: any[];
+                    _views = await Api.model('ticket', "user");
+
+
+                    setTickets(_views as Ticket[]);
+                }
+                catch (err: any) {
+                    handleOpen(err.message || "An error occured");
+                }
+                setLoading(false);
+                setShown(true)
+            }
+
+        }
+        if (tickets.length > 0) return;
+        loadFunc()
+
+    }, [retries, showing, shown, tickets])
+    const handleOpen = (message: string) => {
+        setErrorMessage(message);
+        setErrorPresent(true);
+        setLoading(false);
+
+    }
+
+
+    const handleClose = () => {
+        setErrorMessage("");
+        setErrorPresent(false);
+    }
+
+
+    const action = (
+        <React.Fragment>
+            <Button color="secondary" size="small" onClick={handleRetry}>
+                Retry
+            </Button>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}
+            >
+
+
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
+
+    const dialog2 = (<Dialog open={open2} onClose={handleCloseDialog2}>
+
+        <DialogTitle>{"Ticket from " + user?.fullName || "None"}</DialogTitle>
+        <DialogContent>
+            <Typography variant="h6">{currentTicket ? currentTicket.title : "None"}</Typography>
+            <DialogContentText>{currentTicket ? currentTicket.body : "None"}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={handleClickOpen3}>Message</Button>
+            <Button onClick={handleCloseDialog2}>Close</Button>
+
+        </DialogActions>
+    </Dialog>)
+
+    const dialog = (<Dialog open={open} onClose={handleCloseDialog}>
+
+        <DialogTitle>{user?.fullName || "None"}</DialogTitle>
+        <DialogContent>
+            <Box display="flex" style={{ minWidth: '200px' }} alignItems="center">
+                <div style={{ marginRight: '1em' }}>
+                    <Avatar
+                        sx={{ width: 50, height: 50, }}
+                        alt={user?.fullName}
+                        src={user?.profilePic}
+                    />
+                </div>
+                <Typography>{user?.emailAddress || "None"}</Typography>
+            </Box>
+
+
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={handleCloseDialog}>Close</Button>
+
+        </DialogActions>
+    </Dialog>)
+
+
+    const dialog3 = (
+        <Dialog
+            fullScreen
+            open={open3}
+            onClose={handleClose3}
+            TransitionComponent={Transition}
+        >
+            <AppBar sx={{ position: 'relative' }}>
+                <Toolbar>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={handleClose3}
+                        aria-label="close"
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                    <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                        {user?.fullName || "None"}
+                    </Typography>
+
+                </Toolbar>
+            </AppBar>
+            {(user && currentTicket) && <MessageComponent user={user} ticket={currentTicket} />}
+        </Dialog>
+    )
+    const body = () => {
+        if (loading && tickets.length === 0) {
+            return (<Container maxWidth="sm" style={{ paddingTop: "2em", height: '60vh' }} >
+                <Centered sx={{ height: '100%' }}>
+                    <Box>
+                        <CircularProgress />
+                        <Typography>Loading</Typography>
+                    </Box>
+                </Centered>
+            </Container>)
+        }
+
+        if (tickets.length === 0) {
+            return (<Container maxWidth="sm" style={{ paddingTop: "2em", height: '60vh' }} >
+                <Centered sx={{ height: '100%', textAlign: 'center' }}>
+                    <Box>
+
+                        <Typography sx={{ mb: 2 }}>Nothing Found Here</Typography>
+                        <Button color="secondary" size="small" onClick={handleRetry}>
+                            Reload
+                        </Button>
+
+                    </Box>
+                </Centered>
+            </Container>)
+        }
+        else return (
+            <Container maxWidth="md" style={{ padding: '1em' }}>
+                <Paper style={{ marginBottom: '2em' }}>
+                    {loading2 && <LinearProgress />}
+
+                    <TableContainer style={{ minHeight: '40vh' }}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Date</TableCell>
+                                    <TableCell>User Name</TableCell>
+                                    <TableCell >Ticket id</TableCell>
+                                    <TableCell >Subject</TableCell>
+                                    <TableCell >Message</TableCell>
+                                    <TableCell >Action</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {(rowsPerPage > 0
+                                    ? tickets.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : tickets).map((ticket, i) => {
+                                        const { body, title, id, createdAt, user } = ticket;
+                                        return (
+                                            <TableRow
+                                                key={'ticket-' + i}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell ><Typography>{dayjs(createdAt).format('DD/MM/YYYY')}</Typography></TableCell>
+                                                <TableCell ><Button onClick={() => {
+                                                    handleClickOpen(user);
+                                                }} style={{ textTransform: 'none' }}>{shortenText(user.fullName, 18)}</Button> </TableCell>
+                                                <TableCell ><Typography>{id}</Typography> </TableCell>
+                                                <TableCell ><Typography>{shortenText(title, 10)}</Typography> </TableCell>
+                                                <TableCell ><Typography>{shortenText(body, 15)}</Typography> </TableCell>
+
+
+                                                <TableCell >
+
+                                                    <Button onClick={() => {
+                                                        setCurrentTicket(ticket);
+                                                        setUser(user)
+                                                        setOpen2(true);
+                                                    }} style={{ textTransform: 'none' }}>View</Button>
+                                                </TableCell>
+
+                                                {/*
+                    <TableCell align="right">{row.protein}</TableCell> */}
+                                            </TableRow>
+                                        )
+                                    })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        sx={{ width: '100%', display: 'block' }}
+                        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                        colSpan={3}
+                        count={tickets.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                            inputProps: {
+                                'aria-label': 'rows per page',
+                            },
+                            native: true,
+                        }}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationActions}
+                    />
+                </Paper>
+            </Container>
+        )
+    }
+
+
+    return (<Box>
+
+        {body()}
+
+        {dialog}
+        {dialog2}
+        {dialog3}
+        <Snackbar
+            open={errorPresent}
+            autoHideDuration={6000}
+
+            onClose={handleClose}
+            message={errrorMessage}
+            action={action}
+        />
+
+    </Box>);
+
+}
+
+
+
+
 
 
 const AdminDashboard = () => {
@@ -535,6 +970,10 @@ const AdminDashboard = () => {
 
             <Box style={{ display: (value === 0 ? 'block' : 'none') }}>
                 <RequestsTab showing={value === 0} />
+
+            </Box>
+            <Box style={{ display: (value === 1 ? 'block' : 'none') }}>
+                <TicketsTab showing={value === 1} />
 
             </Box>
         </Box></>)

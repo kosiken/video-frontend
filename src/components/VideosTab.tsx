@@ -385,7 +385,7 @@ console.log(err)
                                 numSelected={selected.length}
 
                                 onSelectAllClick={handleSelectAllClick}
-                                headCells={['Title', 'Type', 'Views', 'Watch']}
+                                headCells={['Title', 'Type', 'Views','Likes', 'Watch']}
                                 rowCount={rows.length}
                             />
                             <TableBody>
@@ -418,11 +418,15 @@ console.log(err)
                                                 {row.videoType}
                                             </TableCell>
                                             <TableCell style={{ width: 160 }} align="left">
-                                                {row.viewCount} view(s)
+                                                {row.viewCount} 
 
                                             </TableCell>
                                             <TableCell style={{ width: 160 }} align="left">
-                                                <AppLink to={"/main/watch/" + row.id} doNotUseButton>
+                                                {row.likeCount} 
+
+                                            </TableCell>
+                                            <TableCell style={{ width: 160 }} align="left">
+                                                <AppLink to={(row.videoType === "public"? "/main/watch/" : "/main/restricted/isOwner") + row.id} doNotUseButton>
                                                     <IconButton >
                                                         <PreviewIcon htmlColor={theme.palette.primary.main} />
                                                     </IconButton>

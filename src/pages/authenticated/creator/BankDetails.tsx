@@ -114,7 +114,7 @@ const BankDetails: React.FC = () => {
 
     if (bankDetails)
         return (
-            <Box style={{ marginTop: "4em", position: "relative" }} sx={{ pt: 1 }}>
+            <Box style={{ paddingTop: "4em", position: "relative" }} sx={{ pt: 1 }}>
                 <Container maxWidth="md"     sx={{ marginLeft: { sm: 0, md: "200px" }, maxWidth: { md: 'calc(100vw - 200px)', sm: 'auto' }, }}>
                 {loading && <LinearProgress />}
                     <form style={{ maxWidth: "500px" }} onSubmit={handleSubmit(onSubmit)}>
@@ -207,7 +207,7 @@ const BankDetails: React.FC = () => {
         );
     else
         return (
-            <Box style={{ marginTop: "4em", position: "relative" }} sx={{ pt: 1 }}>
+            <Box style={{ paddingTop: "4em", position: "relative" }} sx={{ pt: 1 }}>
                 <Centered sx={{ height: "60vh" }}>
                     <Typography sx={{ mb: 1 }}>An internal error has occured</Typography>
                     <AppLink to="/" doNotUseButton>

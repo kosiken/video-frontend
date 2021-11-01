@@ -111,13 +111,15 @@ const Sidebar = () => {
       </Paper>
     </Box>
   );
+
+  
 }
 
 const Dashboard = () => {
   // 
   return (
     <Box>
-      <Box style={{ maxHeight: 'calc(100vh )', overflow: 'hidden', marginTop: '64px' }} sx={{ position: "relative", display: { sm: "block", md: "flex" } }}>
+      <Box style={{ maxHeight: 'calc(100vh )', overflow: 'hidden', paddingTop: '64px' }} sx={{ position: "relative", display: { sm: "block", md: "flex" } }}>
         <Box style={{ overflowY: 'scroll', height: '100vh' }} flex={1}>
 
           <Container maxWidth="md">

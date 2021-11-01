@@ -345,7 +345,7 @@ const Analytics: React.FC = () => {
     }
 
     return (
-        <Box style={{ marginTop: "4em", position: "relative", height: '100vh' }} sx={{ marginLeft: { sm: 0, md: "200px" }, maxWidth: { md: 'calc(100vw - 200px)', sm: 'auto' }, }}>
+        <Box style={{ paddingTop: "4em", position: "relative", height: '100vh' }} sx={{ marginLeft: { sm: 0, md: "200px" }, maxWidth: { md: 'calc(100vw - 200px)', sm: 'auto' }, }}>
 
             {getBody()}
             <ApiLoader setLoading={setLoading} request={retry} onLoad={(v) => {

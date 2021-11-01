@@ -28,6 +28,7 @@ import CircularProgress, {
 } from '@mui/material/CircularProgress';
 import Centered from '../../../components/Centered';
 import AppLink from '../../../components/AppLink';
+import Video from '../../../models/Video';
 
 const schema = yup
     .object({
@@ -77,6 +78,7 @@ const AddVideo = () => {
         value: 'restricted'
     }]
     const [videoType, setVideoType] = useState('public');
+    const [video, setVideo] = useState<Video>()
 
     const [loading, setLoading] = useState(true);
     const [loadedCurrent, setLoadedCurrent] = useState(0)
@@ -114,6 +116,7 @@ const AddVideo = () => {
         Api.uploadVideo(videoId, data).then(v => {
             console.log(v)
             setVideoId(v.id);
+            setVideo(v)
             setHasSubmittedDetails(true);
             setLoading(false)
         }).catch(e => {
@@ -203,9 +206,11 @@ const AddVideo = () => {
                     let { up } = JSON.parse(xhr.response);
                     console.log(up)
                     setVideoId(up.id)
+                
                     setFile(undefined)
                     setLoadedCurrent(0)
                     setLoading(false);
+
 
 
                 }
@@ -217,7 +222,7 @@ const AddVideo = () => {
 
     }
 
-    if (done && hasSubmittedDetails) {
+    if (done && hasSubmittedDetails && video) {
         return (<Box style={{ marginTop: "64px", minHeight: '80vh' }}
             sx={{ marginLeft: { sm: 0, md: "200px" }, maxWidth: { md: 'calc(100vw - 200px)', sm: 'auto' }, }}
         >
@@ -234,7 +239,7 @@ const AddVideo = () => {
                     </div>
                     <Typography align="center" color="success.main" sx={{ mt: 2, mb: 2 }}> Done Creating Video</Typography>
                     <div style={{ textAlign: 'center' }}>
-                        <AppLink to={`/main/watch/${videoId}`}>
+                        <AppLink to={ `/creator/watch/${videoId}`}>
                             View
                         </AppLink>
                     </div>

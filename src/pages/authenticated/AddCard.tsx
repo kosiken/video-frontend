@@ -181,7 +181,7 @@ const AddCard: React.FC = () => {
         );
     else
         return (
-            <Box style={{ marginTop: "4em", position: "relative" }} sx={{ pt: 1 }}>
+            <Box style={{ paddingTop: "4em", position: "relative" }} sx={{ pt: 1 }}>
                 <Centered sx={{ height: "60vh" }}>
                     <Typography sx={{ mb: 1 }}>An internal error has occured</Typography>
                     <AppLink to="/" doNotUseButton>

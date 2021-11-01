@@ -59,12 +59,12 @@ const TabFour: React.FC<KosyTabProps> = ({ showing }) => {
   return (
     <Container maxWidth="md" >
       <Spacer space={30} />
-      {purchases.map(({ videoPurchased: video, amountPaid: price, channel }, index) => {
+      {purchases.map(({ videoPurchased: video, amountPaid: price, channel, accessCode }, index) => {
 
         return (<Box sx={{mb: 1}} key={'view-history-' + index} display="flex" alignItems="center">
 
           <div style={{ width: "40%", maxWidth: '230px' }}>
-            <Link to={"/watch/" + video.id} >
+            <Link to={"/main/restricted/" + accessCode} >
               <img style={{ display: 'block', width: '100%' }} src={video.thumbnail} alt={video.title} />
             </Link>
           </div>

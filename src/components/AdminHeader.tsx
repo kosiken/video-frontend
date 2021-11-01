@@ -24,7 +24,7 @@ import Tooltip from "@mui/material/Tooltip";
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Switch from "@mui/material/Switch";
 import { useDispatch  } from "react-redux";
-
+import FaceIcon from '@mui/icons-material/Face';
 import AppLink from "./AppLink";
 import Home  from "@mui/icons-material/Home";
 
@@ -46,11 +46,9 @@ interface IDrawerMenuItem {
 
 const DrawerItems: IDrawerMenuItem[] = [
   { title: "Dashboard", url: "/dashboard", Icon: DashboardIcon },
-  { title: "Create Video", url: "/add-video", Icon: AddCircleIcon },
-  { title: "Edit Channel", url: "/edit-channel", Icon: EditIcon },
-  { title: "Bank Account", url: "/edit-bank-account", Icon: EditIcon },
-  { title: "Analytics", url: "/analytics", Icon: AnalyticsIcon },
-  { title: "Income", url: "/income", Icon: AccountBalanceWalletIcon },
+  {title: "Users", url: "/users", Icon: FaceIcon },
+  
+  { title: "Wallets", url: "/wallet", Icon: AccountBalanceWalletIcon },
 
 ];
 export default function  AdminHeader(props: Props) {
